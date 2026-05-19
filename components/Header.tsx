@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth'
 import { auth, isFirebaseConfigured } from '@/lib/firebase'
@@ -28,9 +29,10 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link
           href="/"
-          className="text-xl font-bold text-amber-400 tracking-tight hover:text-amber-300 transition-colors"
+          className="flex items-center gap-2 hover:opacity-90 transition-opacity"
         >
-          Şantiye İlan
+          <Image src="/logo.png" alt="Şantiye İlan" width={32} height={32} className="rounded" />
+          <span className="text-xl font-bold text-amber-400 tracking-tight">Şantiye İlan</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
