@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   const totalListings = mockListings.length
-  const pendingListings = mockListings.filter((l) => l.status === 'pending')
-  const approvedListings = mockListings.filter((l) => l.status === 'approved')
+  const pendingListings = mockListings.filter((l) => l.status === 'pending_payment')
+  const approvedListings = mockListings.filter((l) => l.status === 'active')
   const featuredListings = mockListings.filter((l) => l.isFeatured)
   const totalPayments = mockPayments.reduce((sum, p) => sum + (p.status === 'success' ? p.amount : 0), 0)
 
@@ -243,8 +243,8 @@ function ListingTableRow({
   showActions?: boolean
 }) {
   const statusColors: Record<string, string> = {
-    approved: 'bg-emerald-100 text-emerald-700',
-    pending: 'bg-amber-100 text-amber-700',
+    active: 'bg-emerald-100 text-emerald-700',
+    pending_payment: 'bg-amber-100 text-amber-700',
     rejected: 'bg-red-100 text-red-600',
     draft: 'bg-slate-100 text-slate-500',
     expired: 'bg-slate-100 text-slate-400',
