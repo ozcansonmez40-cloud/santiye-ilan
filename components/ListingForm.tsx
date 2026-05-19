@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
-import { TURKISH_CITIES, CITY_DISTRICTS, POSITIONS, LISTING_TYPE_LABELS } from '@/lib/constants'
+import { TURKISH_CITIES, CITY_DISTRICTS, POSITIONS, LISTING_TYPE_LABELS, ABROAD_COUNTRIES } from '@/lib/constants'
 import type { ListingType } from '@/lib/types'
 
 type FormData = {
@@ -159,39 +159,56 @@ export default function ListingForm() {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Şehir" error={errors.city}>
+        <Field label="Şehir / Konum" error={errors.city}>
           <select
             value={form.city}
             onChange={(e) => { set('city', e.target.value); set('district', '') }}
             className={inputCls(errors.city)}
           >
             <option value="">Şehir seçin</option>
+            <option value="Yurtdışı">🌍 Yurtdışı</option>
             {TURKISH_CITIES.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </Field>
-        <Field label="İlçe">
-          {form.city ? (
+
+        {form.city === 'Yurtdışı' ? (
+          <Field label="Ülke">
             <select
               value={form.district}
               onChange={(e) => set('district', e.target.value)}
               className={inputCls()}
             >
-              <option value="">İlçe seçin (opsiyonel)</option>
-              {(CITY_DISTRICTS[form.city] ?? []).map((d) => (
-                <option key={d} value={d}>{d}</option>
+              <option value="">Ülke seçin</option>
+              {ABROAD_COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
               ))}
             </select>
-          ) : (
-            <input
-              type="text"
-              disabled
-              placeholder="Önce şehir seçin"
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-400 bg-slate-50 cursor-not-allowed"
-            />
-          )}
-        </Field>
+          </Field>
+        ) : (
+          <Field label="İlçe">
+            {form.city ? (
+              <select
+                value={form.district}
+                onChange={(e) => set('district', e.target.value)}
+                className={inputCls()}
+              >
+                <option value="">İlçe seçin (opsiyonel)</option>
+                {(CITY_DISTRICTS[form.city] ?? []).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                disabled
+                placeholder="Önce şehir seçin"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-400 bg-slate-50 cursor-not-allowed"
+              />
+            )}
+          </Field>
+        )}
       </div>
 
       <Field label="Pozisyon" error={errors.position}>

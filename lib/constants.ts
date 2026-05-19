@@ -114,6 +114,34 @@ export const POPULAR_CITIES = [
   "Kocaeli",
 ];
 
+export const ABROAD_COUNTRIES = [
+  "Suudi Arabistan",
+  "Birleşik Arap Emirlikleri",
+  "Katar",
+  "Kuveyt",
+  "Bahreyn",
+  "Umman",
+  "Almanya",
+  "Hollanda",
+  "Belçika",
+  "Fransa",
+  "İsviçre",
+  "Avusturya",
+  "İngiltere",
+  "İsveç",
+  "Norveç",
+  "Danimarka",
+  "Finlandiya",
+  "Libya",
+  "Cezayir",
+  "Fas",
+  "Türkmenistan",
+  "Azerbaycan",
+  "Kazakistan",
+  "Rusya",
+  "Diğer",
+];
+
 export const POSITIONS = [
   "Şantiye Şefi",
   "İnce İşler Şefi",
