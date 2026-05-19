@@ -116,7 +116,11 @@ export const POPULAR_CITIES = [
 
 export const POSITIONS = [
   "Şantiye Şefi",
+  "İnce İşler Şefi",
+  "Kaba İşler Şefi",
   "İnşaat Mühendisi",
+  "Elektrik Mühendisi",
+  "Makine Mühendisi",
   "Mimar",
   "Tekniker",
   "Saha Formeni",
