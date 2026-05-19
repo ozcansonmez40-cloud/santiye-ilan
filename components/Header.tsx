@@ -47,9 +47,9 @@ export default function Header() {
               <Link href="/ilanim" className="text-slate-300 hover:text-white transition-colors text-sm">
                 İlanlarım
               </Link>
-              <span className="text-slate-300 text-sm">
+              <Link href="/profil" className="text-slate-300 hover:text-white transition-colors text-sm">
                 👤 {displayName}
-              </span>
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="text-slate-400 hover:text-white transition-colors text-sm"
@@ -109,7 +109,9 @@ export default function Header() {
               >
                 İlanlarım
               </Link>
-              <span className="py-2.5 text-slate-300">👤 {displayName}</span>
+              <Link href="/profil" className="py-2.5 text-slate-300 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>
+                👤 {displayName}
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="py-2.5 text-left text-slate-400 hover:text-white transition-colors"
