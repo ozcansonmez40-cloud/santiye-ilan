@@ -52,7 +52,7 @@ export default function JobCard({ listing }: Props) {
           )}
 
           {listing.companyName && (
-            <p className="mt-1 text-sm font-medium text-slate-600">{listing.companyName}</p>
+            <p className="mt-1.5 text-sm font-bold text-slate-700">🏢 {listing.companyName}</p>
           )}
         </div>
       </div>

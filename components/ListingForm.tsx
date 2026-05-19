@@ -14,6 +14,8 @@ type FormData = {
   city: string
   district: string
   position: string
+  companyName: string
+  workType: string
   description: string
   contactName: string
   contactPhone: string
@@ -29,6 +31,8 @@ const INITIAL: FormData = {
   city: '',
   district: '',
   position: '',
+  companyName: '',
+  workType: '',
   description: '',
   contactName: '',
   contactPhone: '',
@@ -229,6 +233,33 @@ export default function ListingForm() {
           ))}
         </select>
       </Field>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {form.listingType === 'employer' && (
+          <Field label="Firma Adı (opsiyonel)">
+            <input
+              type="text"
+              value={form.companyName}
+              onChange={(e) => set('companyName', e.target.value)}
+              placeholder="Firma veya şirket adı"
+              className={inputCls()}
+            />
+          </Field>
+        )}
+        <Field label="Çalışma Şekli (opsiyonel)">
+          <select
+            value={form.workType}
+            onChange={(e) => set('workType', e.target.value)}
+            className={inputCls()}
+          >
+            <option value="">Seçin</option>
+            <option value="full_time">Tam Zamanlı</option>
+            <option value="part_time">Yarı Zamanlı</option>
+            <option value="project_based">Proje Bazlı</option>
+            <option value="temporary">Geçici / Sezonluk</option>
+          </select>
+        </Field>
+      </div>
 
       <Field label="Açıklama" error={errors.description}>
         <textarea
