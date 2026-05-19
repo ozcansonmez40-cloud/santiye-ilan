@@ -38,7 +38,7 @@ export default function ListingsGrid({
   useEffect(() => {
     async function fetchListings() {
       if (!isFirebaseConfigured || !db) {
-        const fallback = mockListings.filter((l) => l.status === 'approved')
+        const fallback = mockListings.filter((l) => l.status === 'active')
         setListings(fallback)
         setLoading(false)
         return
