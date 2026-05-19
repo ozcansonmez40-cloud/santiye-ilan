@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Kullanım Şartları | Şantiye İlan',
+  title: 'Kullanım Şartları | Saha İlan',
 }
 
 export default function KullanimSartlariPage() {
@@ -13,11 +13,11 @@ export default function KullanimSartlariPage() {
           <p className="text-sm text-slate-400 mb-8">Son güncelleme: Mayıs 2026</p>
 
           <Section title="1. Kabul">
-            <p>Şantiye İlan platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. Şartları kabul etmiyorsanız platformu kullanmayınız.</p>
+            <p>Saha İlan platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. Şartları kabul etmiyorsanız platformu kullanmayınız.</p>
           </Section>
 
           <Section title="2. Hizmet Tanımı">
-            <p>Şantiye İlan, inşaat sektöründe iş arayan profesyoneller ile eleman arayan firma ve müteahhitleri bir araya getiren bir ilan platformudur. Platform, taraflar arasındaki iletişime aracılık eder; iş akdi kurulmasına taraf değildir.</p>
+            <p>Saha İlan, inşaat sektöründe iş arayan profesyoneller ile eleman arayan firma ve müteahhitleri bir araya getiren bir ilan platformudur. Platform, taraflar arasındaki iletişime aracılık eder; iş akdi kurulmasına taraf değildir.</p>
           </Section>
 
           <Section title="3. İlan Kuralları">
@@ -30,7 +30,7 @@ export default function KullanimSartlariPage() {
           </Section>
 
           <Section title="4. Kullanıcı Sorumluluğu">
-            <p>İlan içeriklerinin doğruluğundan ve yasal uygunluğundan ilan veren kullanıcı sorumludur. Şantiye İlan, kullanıcılar arasındaki anlaşmazlıklarda taraf olmaz.</p>
+            <p>İlan içeriklerinin doğruluğundan ve yasal uygunluğundan ilan veren kullanıcı sorumludur. Saha İlan, kullanıcılar arasındaki anlaşmazlıklarda taraf olmaz.</p>
           </Section>
 
           <Section title="5. Ödeme">
@@ -42,7 +42,7 @@ export default function KullanimSartlariPage() {
           </Section>
 
           <Section title="7. Platformun Hakları">
-            <p>Şantiye İlan, kurallara aykırı ilanları önceden bildirim yapmaksızın kaldırma hakkını saklı tutar. Kötüye kullanım halinde hesap askıya alınabilir.</p>
+            <p>Saha İlan, kurallara aykırı ilanları önceden bildirim yapmaksızın kaldırma hakkını saklı tutar. Kötüye kullanım halinde hesap askıya alınabilir.</p>
           </Section>
 
           <Section title="8. İletişim">

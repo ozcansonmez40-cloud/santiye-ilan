@@ -7,8 +7,8 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const defaultMetadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Şantiye İlan | İnşaat ve Saha Personeli İlan Platformu",
-    template: "%s | Şantiye İlan",
+    default: "Saha İlan | İnşaat ve Saha Personeli İlan Platformu",
+    template: "%s | Saha İlan",
   },
   description: SITE_DESCRIPTION,
   openGraph: {

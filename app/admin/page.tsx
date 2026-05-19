@@ -3,7 +3,7 @@ import { mockListings, mockUsers, mockPayments } from '@/lib/mockData'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: 'Admin Paneli | Şantiye İlan',
+  title: 'Admin Paneli | Saha İlan',
 }
 
 // TODO: Protect this page with Firebase Auth role check
@@ -23,7 +23,7 @@ export default function AdminPage() {
       {/* Admin header */}
       <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
         <div>
-          <p className="text-amber-400 font-bold text-lg">Şantiye İlan</p>
+          <p className="text-amber-400 font-bold text-lg">Saha İlan</p>
           <p className="text-slate-400 text-xs">Admin Paneli</p>
         </div>
         <span className="text-xs bg-amber-500 text-slate-900 font-semibold px-3 py-1 rounded-full">

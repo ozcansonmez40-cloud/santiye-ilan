@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           <div className="max-w-xs">
-            <p className="text-white font-bold text-lg">Şantiye İlan</p>
+            <p className="text-white font-bold text-lg">Saha İlan</p>
             <p className="text-sm mt-2 leading-relaxed">
               İnşaat, mimarlık ve saha personeli için Türkiye'nin ilan platformu.
             </p>
@@ -27,7 +27,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-slate-700 text-xs text-center text-slate-500">
-          © 2026 Şantiye İlan. Tüm hakları saklıdır.
+          © 2026 Saha İlan. Tüm hakları saklıdır.
         </div>
       </div>
     </footer>

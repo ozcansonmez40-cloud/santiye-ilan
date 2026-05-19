@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import ListingForm from '@/components/ListingForm'
 
 export const metadata: Metadata = {
-  title: 'İlan Ver | Şantiye İlan',
+  title: 'İlan Ver | Saha İlan',
   description: 'Şantiye şefi, inşaat mühendisi veya saha personeli ilanı verin. Hızlı ve kolaydır.',
 }
 

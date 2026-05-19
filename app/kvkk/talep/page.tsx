@@ -23,7 +23,7 @@ export default function KvkkTalepPage() {
           'E-posta': email,
           'Talep Türü': requestType,
           'Açıklama': message,
-          _subject: `Şantiye İlan KVKK Talebi: ${requestType}`,
+          _subject: `Saha İlan KVKK Talebi: ${requestType}`,
         }),
       })
       setSent(true)

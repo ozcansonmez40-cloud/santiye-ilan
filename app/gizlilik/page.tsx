@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Gizlilik Politikası | Şantiye İlan',
+  title: 'Gizlilik Politikası | Saha İlan',
 }
 
 export default function GizlilikPage() {
@@ -13,7 +13,7 @@ export default function GizlilikPage() {
           <p className="text-sm text-slate-400 mb-8">Son güncelleme: Mayıs 2026</p>
 
           <Section title="1. Genel Bakış">
-            <p>Şantiye İlan olarak gizliliğinize saygı duyuyor ve kişisel verilerinizi korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı, nasıl kullandığımızı ve koruduğumuzu açıklamaktadır.</p>
+            <p>Saha İlan olarak gizliliğinize saygı duyuyor ve kişisel verilerinizi korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı, nasıl kullandığımızı ve koruduğumuzu açıklamaktadır.</p>
           </Section>
 
           <Section title="2. Topladığımız Bilgiler">

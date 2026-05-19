@@ -31,8 +31,8 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2 hover:opacity-90 transition-opacity"
         >
-          <Image src="/logo.png" alt="Şantiye İlan" width={32} height={32} className="rounded" />
-          <span className="text-xl font-bold text-amber-400 tracking-tight">Şantiye İlan</span>
+          <Image src="/logo.png" alt="Saha İlan" width={32} height={32} className="rounded" />
+          <span className="text-xl font-bold text-amber-400 tracking-tight">Saha İlan</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-7 text-sm font-medium">

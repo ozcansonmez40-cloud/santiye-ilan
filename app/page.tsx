@@ -10,7 +10,7 @@ import ListingsGrid from '@/components/ListingsGrid'
 
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: 'Şantiye İlan | İnşaat ve Saha Personeli İlan Platformu',
+  title: 'Saha İlan | İnşaat ve Saha Personeli İlan Platformu',
   description:
     'Şantiye şefi, inşaat mühendisi, mimar ve saha personeli ilanları. Firmalar eleman ilanı verir, profesyoneller iş arıyorum ilanı bırakır.',
 }

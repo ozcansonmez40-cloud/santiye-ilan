@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'KVKK Aydınlatma Metni | Şantiye İlan',
+  title: 'KVKK Aydınlatma Metni | Saha İlan',
 }
 
 export default function KvkkPage() {
@@ -13,7 +13,7 @@ export default function KvkkPage() {
           <p className="text-sm text-slate-400 mb-8">Son güncelleme: Mayıs 2026</p>
 
           <Section title="1. Veri Sorumlusu">
-            <p>Şantiye İlan olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu sıfatıyla kişisel verilerinizi işlemekteyiz.</p>
+            <p>Saha İlan olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu sıfatıyla kişisel verilerinizi işlemekteyiz.</p>
           </Section>
 
           <Section title="2. İşlenen Kişisel Veriler">

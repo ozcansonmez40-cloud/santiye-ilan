@@ -1,9 +1,9 @@
 import type { ListingType, WorkType } from "./types";
 
-export const SITE_NAME = "Şantiye İlan";
+export const SITE_NAME = "Saha İlan";
 
 export const SITE_DESCRIPTION =
-  "İnşaat, mimarlık ve saha personeli için şantiye ilan platformu.";
+  "İnşaat, mimarlık ve saha personeli için iş ve eleman ilan platformu.";
 
 export const LISTING_TYPE_LABELS: Record<ListingType, string> = {
   employer: "Eleman Aranıyor",
