@@ -20,9 +20,9 @@ export default function Footer() {
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-white font-semibold mb-1">Yasal</p>
-              <Link href="#" className="hover:text-white transition-colors">KVKK</Link>
-              <Link href="#" className="hover:text-white transition-colors">Gizlilik Politikası</Link>
-              <Link href="#" className="hover:text-white transition-colors">Kullanım Şartları</Link>
+              <Link href="/kvkk" className="hover:text-white transition-colors">KVKK</Link>
+              <Link href="/gizlilik" className="hover:text-white transition-colors">Gizlilik Politikası</Link>
+              <Link href="/kullanim-sartlari" className="hover:text-white transition-colors">Kullanım Şartları</Link>
             </div>
           </div>
         </div>
