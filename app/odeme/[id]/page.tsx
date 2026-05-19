@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, use } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore'
-import { db, isFirebaseConfigured } from '@/lib/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
+import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 
 const PACKAGES = [
   {
@@ -41,6 +42,18 @@ export default function OdemePage({ params }: { params: Promise<{ id: string }> 
   const [selected, setSelected] = useState('standard')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [authReady, setAuthReady] = useState(false)
+  const [authed, setAuthed] = useState(false)
+
+  useEffect(() => {
+    if (!isFirebaseConfigured || !auth) { setAuthReady(true); return }
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setAuthed(!!u)
+      setAuthReady(true)
+      if (!u) router.replace('/giris')
+    })
+    return () => unsub()
+  }, [router])
 
   async function handlePayment() {
     if (!isFirebaseConfigured || !db) return
@@ -67,6 +80,12 @@ export default function OdemePage({ params }: { params: Promise<{ id: string }> 
   }
 
   const selectedPkg = PACKAGES.find(p => p.id === selected)!
+
+  if (!authReady) {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" /></div>
+  }
+
+  if (!authed) return null
 
   return (
     <div className="min-h-screen bg-slate-50 py-10">

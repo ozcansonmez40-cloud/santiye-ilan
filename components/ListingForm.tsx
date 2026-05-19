@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { db, isFirebaseConfigured } from '@/lib/firebase'
+import { onAuthStateChanged, type User } from 'firebase/auth'
+import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { TURKISH_CITIES, CITY_DISTRICTS, POSITIONS, LISTING_TYPE_LABELS } from '@/lib/constants'
 import type { ListingType } from '@/lib/types'
 
@@ -49,6 +50,13 @@ export default function ListingForm() {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [user, setUser] = useState<User | null | 'loading'>('loading')
+
+  useEffect(() => {
+    if (!isFirebaseConfigured || !auth) { setUser(null); return }
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u))
+    return () => unsub()
+  }, [])
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -95,6 +103,28 @@ export default function ListingForm() {
       setSubmitError('İlan kaydedilirken bir hata oluştu. Tekrar deneyin.')
       setLoading(false)
     }
+  }
+
+  if (user === 'loading') {
+    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" /></div>
+  }
+
+  if (!user) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-sm text-center">
+        <p className="text-2xl mb-3">🔒</p>
+        <h2 className="text-lg font-bold text-slate-800 mb-2">Giriş Yapmanız Gerekiyor</h2>
+        <p className="text-sm text-slate-500 mb-5">İlan verebilmek için lütfen önce giriş yapın veya hesap oluşturun.</p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/giris" className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl text-sm transition-colors">
+            Giriş Yap
+          </a>
+          <a href="/giris?mod=kayit" className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-colors">
+            Hesap Oluştur
+          </a>
+        </div>
+      </div>
+    )
   }
 
   return (
