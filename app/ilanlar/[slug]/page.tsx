@@ -203,16 +203,25 @@ export default function ListingDetailPage({ params }: PageProps) {
                   )}
                 </div>
               ) : (
-                <div className="bg-slate-50 rounded-xl p-5 text-center border border-slate-200">
-                  <p className="text-sm text-slate-600 mb-3">
-                    İletişim bilgilerini görmek için giriş yapmanız gerekiyor.
+                <div className="bg-amber-50 rounded-xl p-5 text-center border border-amber-200">
+                  <p className="text-base font-bold text-slate-800 mb-1">📞 İletişim bilgilerini görmek ister misiniz?</p>
+                  <p className="text-sm text-slate-500 mb-4">
+                    Ücretsiz hesap oluşturun — 30 saniye sürer, telefon ve e-posta bilgileri anında görünür.
                   </p>
-                  <Link
-                    href="/giris"
-                    className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors"
-                  >
-                    Giriş Yap
-                  </Link>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <Link
+                      href="/giris"
+                      className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors"
+                    >
+                      Ücretsiz Kayıt Ol
+                    </Link>
+                    <Link
+                      href="/giris"
+                      className="inline-block bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors border border-slate-200"
+                    >
+                      Giriş Yap
+                    </Link>
+                  </div>
                 </div>
               )}
 
