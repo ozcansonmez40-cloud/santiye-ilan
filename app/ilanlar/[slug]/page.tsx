@@ -65,7 +65,7 @@ export default function ListingDetailPage({ params }: PageProps) {
   }, [slug])
 
   async function handleReport() {
-    if (!reportReason || !listing || !db) return
+    if (!reportReason || !listing || listing === 'loading' || !db) return
     setReportLoading(true)
     try {
       await addDoc(collection(db, 'reports'), {
