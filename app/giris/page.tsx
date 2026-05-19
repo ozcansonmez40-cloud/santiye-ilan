@@ -23,6 +23,7 @@ export default function GirisPage() {
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
   const [loading, setLoading] = useState(false)
+  const [ageConfirmed, setAgeConfirmed] = useState(false)
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -39,6 +40,10 @@ export default function GirisPage() {
 
     if (mode === 'kayit' && password !== passwordConfirm) {
       setError('Şifreler eşleşmiyor.')
+      return
+    }
+    if (mode === 'kayit' && !ageConfirmed) {
+      setError('Devam etmek için 18 yaşında veya üzerinde olduğunuzu onaylamalısınız.')
       return
     }
 
@@ -259,17 +264,30 @@ export default function GirisPage() {
             </div>
 
             {mode === 'kayit' && (
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Şifre Tekrar</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordConfirm}
-                  onChange={e => setPasswordConfirm(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-                />
-              </div>
+              <>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Şifre Tekrar</label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordConfirm}
+                    onChange={e => setPasswordConfirm(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  />
+                </div>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={ageConfirmed}
+                    onChange={e => setAgeConfirmed(e.target.checked)}
+                    className="mt-0.5 accent-amber-500"
+                  />
+                  <span className="text-xs text-slate-600">
+                    18 yaşında veya üzerinde olduğumu onaylıyorum. İnşaat sektöründe 18 yaş altı çalışma yasal olarak yasaktır.
+                  </span>
+                </label>
+              </>
             )}
 
             {error && (
@@ -290,9 +308,9 @@ export default function GirisPage() {
 
         <p className="mt-6 text-center text-xs text-slate-400">
           Devam ederek{' '}
-          <Link href="#" className="underline">Kullanım Şartları</Link>
+          <Link href="/kullanim-sartlari" className="underline">Kullanım Şartları</Link>
           {' '}ve{' '}
-          <Link href="#" className="underline">Gizlilik Politikası</Link>
+          <Link href="/gizlilik" className="underline">Gizlilik Politikası</Link>
           {`'nı`} kabul etmiş olursunuz.
         </p>
       </div>

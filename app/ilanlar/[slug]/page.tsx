@@ -3,8 +3,9 @@
 import { useEffect, useState, use } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { collection, query, where, limit, getDocs } from 'firebase/firestore'
-import { db, isFirebaseConfigured } from '@/lib/firebase'
+import { collection, query, where, limit, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
+import { onAuthStateChanged, type User } from 'firebase/auth'
+import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS, WORK_TYPE_LABELS } from '@/lib/constants'
 import type { Listing } from '@/lib/types'
 
@@ -12,9 +13,28 @@ type PageProps = {
   params: Promise<{ slug: string }>
 }
 
+const REPORT_REASONS = [
+  'Sahte / yanıltıcı ilan',
+  'Dolandırıcılık girişimi',
+  'Uygunsuz içerik',
+  'İnşaat sektörüyle ilgisiz',
+  'Diğer',
+]
+
 export default function ListingDetailPage({ params }: PageProps) {
   const { slug } = use(params)
   const [listing, setListing] = useState<Listing | null | 'loading'>('loading')
+  const [user, setUser] = useState<User | null | 'loading'>('loading')
+  const [showReport, setShowReport] = useState(false)
+  const [reportReason, setReportReason] = useState('')
+  const [reportSent, setReportSent] = useState(false)
+  const [reportLoading, setReportLoading] = useState(false)
+
+  useEffect(() => {
+    if (!isFirebaseConfigured || !auth) { setUser(null); return }
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u))
+    return () => unsub()
+  }, [])
 
   useEffect(() => {
     async function fetchListing() {
@@ -44,6 +64,24 @@ export default function ListingDetailPage({ params }: PageProps) {
     fetchListing()
   }, [slug])
 
+  async function handleReport() {
+    if (!reportReason || !listing || !db) return
+    setReportLoading(true)
+    try {
+      await addDoc(collection(db, 'reports'), {
+        listingId: listing.id,
+        listingTitle: listing.title,
+        reason: reportReason,
+        reportedAt: serverTimestamp(),
+      })
+      setReportSent(true)
+    } catch {
+      // silent
+    } finally {
+      setReportLoading(false)
+    }
+  }
+
   if (listing === 'loading') {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -58,6 +96,8 @@ export default function ListingDetailPage({ params }: PageProps) {
     listing.listingType === 'employer'
       ? 'bg-blue-50 text-blue-700 border-blue-100'
       : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+
+  const isLoggedIn = user && user !== 'loading'
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -129,39 +169,54 @@ export default function ListingDetailPage({ params }: PageProps) {
               <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
                 İletişim
               </h2>
-              <div className="flex flex-col sm:flex-row gap-3">
-                {listing.contactPhone ? (
-                  <a
-                    href={`tel:${listing.contactPhone}`}
-                    className="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl text-sm transition-colors text-center"
+
+              {isLoggedIn ? (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {listing.contactPhone ? (
+                    <a
+                      href={`tel:${listing.contactPhone}`}
+                      className="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl text-sm transition-colors text-center"
+                    >
+                      📞 {listing.contactPhone}
+                    </a>
+                  ) : null}
+                  {listing.whatsappEnabled && listing.contactPhone && (
+                    <a
+                      href={`https://wa.me/90${listing.contactPhone.replace(/\D/g, '').replace(/^0/, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
+                    >
+                      💬 WhatsApp ile Ulaş
+                    </a>
+                  )}
+                  {listing.contactEmail && (
+                    <a
+                      href={`mailto:${listing.contactEmail}`}
+                      className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
+                    >
+                      ✉️ {listing.contactEmail}
+                    </a>
+                  )}
+                  {!listing.contactPhone && !listing.contactEmail && (
+                    <p className="text-sm text-slate-400">İletişim bilgisi belirtilmemiş.</p>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-slate-50 rounded-xl p-5 text-center border border-slate-200">
+                  <p className="text-sm text-slate-600 mb-3">
+                    İletişim bilgilerini görmek için giriş yapmanız gerekiyor.
+                  </p>
+                  <Link
+                    href="/giris"
+                    className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors"
                   >
-                    📞 {listing.contactPhone}
-                  </a>
-                ) : (
-                  <button className="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl text-sm transition-colors">
-                    📞 İletişim Bilgilerini Gör
-                  </button>
-                )}
-                {listing.whatsappEnabled && listing.contactPhone && (
-                  <a
-                    href={`https://wa.me/90${listing.contactPhone.replace(/\D/g, '').replace(/^0/, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
-                  >
-                    💬 WhatsApp ile Ulaş
-                  </a>
-                )}
-                {listing.contactEmail && (
-                  <a
-                    href={`mailto:${listing.contactEmail}`}
-                    className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
-                  >
-                    ✉️ {listing.contactEmail}
-                  </a>
-                )}
-              </div>
-              {listing.contactName && (
+                    Giriş Yap
+                  </Link>
+                </div>
+              )}
+
+              {listing.contactName && isLoggedIn && (
                 <p className="text-xs text-slate-400 mt-2 text-center">{listing.contactName}</p>
               )}
             </div>
@@ -181,10 +236,55 @@ export default function ListingDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <p className="text-center mt-6 text-xs text-slate-400">
-          Uygunsuz ilan?{' '}
-          <button className="underline hover:text-slate-600">Bildir</button>
-        </p>
+        {/* Bildir */}
+        <div className="text-center mt-6">
+          {!showReport ? (
+            <p className="text-xs text-slate-400">
+              Uygunsuz ilan?{' '}
+              <button onClick={() => setShowReport(true)} className="underline hover:text-slate-600">
+                Bildir
+              </button>
+            </p>
+          ) : reportSent ? (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-700">
+              Bildiriminiz alındı. Teşekkür ederiz.
+            </div>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-xl p-5 text-left shadow-sm">
+              <p className="text-sm font-semibold text-slate-700 mb-3">İlanı bildirme nedeniniz:</p>
+              <div className="flex flex-col gap-2 mb-4">
+                {REPORT_REASONS.map((r) => (
+                  <label key={r} className="flex items-center gap-2 cursor-pointer text-sm text-slate-600">
+                    <input
+                      type="radio"
+                      name="reason"
+                      value={r}
+                      checked={reportReason === r}
+                      onChange={() => setReportReason(r)}
+                      className="accent-amber-500"
+                    />
+                    {r}
+                  </label>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleReport}
+                  disabled={!reportReason || reportLoading}
+                  className="bg-red-500 hover:bg-red-400 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+                >
+                  {reportLoading ? 'Gönderiliyor...' : 'Gönder'}
+                </button>
+                <button
+                  onClick={() => setShowReport(false)}
+                  className="text-slate-500 hover:text-slate-700 px-4 py-2 text-sm"
+                >
+                  İptal
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

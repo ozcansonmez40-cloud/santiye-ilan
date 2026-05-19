@@ -15,6 +15,7 @@ const PACKAGES = [
     duration: '30 gün',
     features: ['İlan listesinde görünür', '30 gün aktif', 'Telefon ile iletişim'],
     highlight: false,
+    comingSoon: false,
   },
   {
     id: 'urgent',
@@ -24,6 +25,7 @@ const PACKAGES = [
     duration: '30 gün',
     features: ['Arama sonuçlarında üst sıra', '"Acil" rozeti', '30 gün aktif', 'Daha fazla görüntülenme'],
     highlight: false,
+    comingSoon: true,
   },
   {
     id: 'featured',
@@ -33,6 +35,7 @@ const PACKAGES = [
     duration: '30 gün',
     features: ['Ana sayfada gösterim', 'Arama sonuçlarında üst sıra', '"Öne Çıkan" rozeti', '30 gün aktif', 'En fazla görüntülenme'],
     highlight: true,
+    comingSoon: true,
   },
 ]
 
@@ -101,14 +104,22 @@ export default function OdemePage({ params }: { params: Promise<{ id: string }> 
           {PACKAGES.map((pkg) => (
             <button
               key={pkg.id}
-              onClick={() => setSelected(pkg.id)}
+              onClick={() => !pkg.comingSoon && setSelected(pkg.id)}
+              disabled={pkg.comingSoon}
               className={`relative text-left rounded-2xl border-2 p-5 transition-all ${
-                selected === pkg.id
+                pkg.comingSoon
+                  ? 'border-slate-100 bg-slate-50 opacity-60 cursor-not-allowed'
+                  : selected === pkg.id
                   ? 'border-amber-500 bg-amber-50 shadow-md'
                   : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
-              {pkg.highlight && (
+              {pkg.comingSoon && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Yakında
+                </span>
+              )}
+              {!pkg.comingSoon && pkg.highlight && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
                   En Popüler
                 </span>
