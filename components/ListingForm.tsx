@@ -95,6 +95,7 @@ export default function ListingForm() {
       const docRef = await addDoc(collection(db, 'listings'), {
         ...form,
         slug,
+        userId: (user as { uid: string }).uid,
         status: 'pending_payment',
         isFeatured: false,
         isUrgent: false,

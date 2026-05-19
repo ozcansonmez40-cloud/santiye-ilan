@@ -44,6 +44,9 @@ export default function Header() {
           </Link>
           {user ? (
             <div className="flex items-center gap-4">
+              <Link href="/ilanim" className="text-slate-300 hover:text-white transition-colors text-sm">
+                İlanlarım
+              </Link>
               <span className="text-slate-300 text-sm">
                 👤 {displayName}
               </span>
@@ -99,6 +102,13 @@ export default function Header() {
           </Link>
           {user ? (
             <>
+              <Link
+                href="/ilanim"
+                className="py-2.5 text-slate-300 hover:text-white transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                İlanlarım
+              </Link>
               <span className="py-2.5 text-slate-300">👤 {displayName}</span>
               <button
                 onClick={handleSignOut}
