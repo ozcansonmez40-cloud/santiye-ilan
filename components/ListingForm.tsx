@@ -17,6 +17,7 @@ type FormData = {
   description: string
   contactName: string
   contactPhone: string
+  contactEmail: string
   whatsappEnabled: boolean
 }
 
@@ -31,6 +32,7 @@ const INITIAL: FormData = {
   description: '',
   contactName: '',
   contactPhone: '',
+  contactEmail: '',
   whatsappEnabled: false,
 }
 
@@ -70,7 +72,10 @@ export default function ListingForm() {
     if (!form.position) next.position = 'Pozisyon seçiniz.'
     if (!form.description.trim()) next.description = 'Açıklama zorunludur.'
     if (!form.contactName.trim()) next.contactName = 'İletişim adı zorunludur.'
-    if (!form.contactPhone.trim()) next.contactPhone = 'Telefon zorunludur.'
+    if (!form.contactPhone.trim() && !form.contactEmail.trim()) {
+      next.contactPhone = 'Telefon veya e-posta en az biri zorunludur.'
+      next.contactEmail = 'Telefon veya e-posta en az biri zorunludur.'
+    }
     setErrors(next)
     return Object.keys(next).length === 0
   }
@@ -242,6 +247,15 @@ export default function ListingForm() {
             onChange={(e) => set('contactName', e.target.value)}
             placeholder="Ad veya firma adı"
             className={inputCls(errors.contactName)}
+          />
+        </Field>
+        <Field label="E-posta (opsiyonel)" error={errors.contactEmail}>
+          <input
+            type="email"
+            value={form.contactEmail}
+            onChange={(e) => set('contactEmail', e.target.value)}
+            placeholder="ornek@firma.com"
+            className={inputCls(errors.contactEmail)}
           />
         </Field>
         <Field label="Telefon" error={errors.contactPhone}>

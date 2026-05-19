@@ -152,6 +152,14 @@ export default function ListingDetailPage({ params }: PageProps) {
                     💬 WhatsApp ile Ulaş
                   </a>
                 )}
+                {listing.contactEmail && (
+                  <a
+                    href={`mailto:${listing.contactEmail}`}
+                    className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
+                  >
+                    ✉️ {listing.contactEmail}
+                  </a>
+                )}
               </div>
               {listing.contactName && (
                 <p className="text-xs text-slate-400 mt-2 text-center">{listing.contactName}</p>

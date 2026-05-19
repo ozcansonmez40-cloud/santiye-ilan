@@ -37,6 +37,7 @@ export type Listing = {
   description: string
   contactName?: string
   contactPhone?: string
+  contactEmail?: string
   whatsappEnabled?: boolean
   companyName?: string
   isFeatured: boolean
