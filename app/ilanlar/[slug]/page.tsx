@@ -44,7 +44,7 @@ export default function ListingDetailPage({ params }: PageProps) {
       }
       try {
         const snap = await getDocs(
-          query(collection(db, 'listings'), where('slug', '==', slug), limit(1))
+          query(collection(db, 'listings'), where('slug', '==', slug), where('status', '==', 'active'), limit(1))
         )
         if (snap.empty) {
           setListing(null)

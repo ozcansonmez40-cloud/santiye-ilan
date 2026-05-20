@@ -1,17 +1,36 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { collection, getDocs, deleteDoc, doc, orderBy, query } from 'firebase/firestore'
-import { db, isFirebaseConfigured } from '@/lib/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
+import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
 import type { Listing } from '@/lib/types'
 
+const ADMIN_EMAIL = 'ozcansonmez.arc@gmail.com'
+
 export default function AdminPage() {
+  const router = useRouter()
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [authed, setAuthed] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!isFirebaseConfigured || !auth) { router.replace('/giris'); return }
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        router.replace('/')
+        return
+      }
+      setAuthed(true)
+    })
+    return () => unsub()
+  }, [router])
+
+  useEffect(() => {
+    if (!authed) return
     async function fetchListings() {
       if (!isFirebaseConfigured || !db) return
       const q = query(collection(db, 'listings'), orderBy('createdAt', 'desc'))
@@ -21,7 +40,9 @@ export default function AdminPage() {
       setLoading(false)
     }
     fetchListings()
-  }, [])
+  }, [authed])
+
+  if (!authed) return null
 
   async function handleDelete(id: string) {
     if (!db || !confirm('Bu ilanı silmek istediğinden emin misin?')) return
