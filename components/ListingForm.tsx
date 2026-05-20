@@ -272,12 +272,12 @@ export default function ListingForm() {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="İletişim Adı / Firma" error={errors.contactName}>
+        <Field label="Yetkili Kişi Adı" error={errors.contactName}>
           <input
             type="text"
             value={form.contactName}
             onChange={(e) => set('contactName', e.target.value)}
-            placeholder="Ad veya firma adı"
+            placeholder="Adınız veya yetkili kişi adı"
             className={inputCls(errors.contactName)}
           />
         </Field>
