@@ -39,8 +39,12 @@ export default function JobCard({ listing }: Props) {
             {listing.title}
           </h2>
 
+          {listing.companyName && (
+            <p className="mt-1 text-sm font-bold text-amber-700">🏢 {listing.companyName}</p>
+          )}
+
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
-            <span>📍 {listing.city} / {listing.district}</span>
+            <span>📍 {listing.city}{listing.district ? ` / ${listing.district}` : ''}</span>
             <span>💼 {listing.position}</span>
             {listing.workType && (
               <span>{WORK_TYPE_LABELS[listing.workType]}</span>
@@ -49,10 +53,6 @@ export default function JobCard({ listing }: Props) {
 
           {listing.salaryText && (
             <p className="mt-1.5 text-sm text-slate-500">{listing.salaryText}</p>
-          )}
-
-          {listing.companyName && (
-            <p className="mt-2 text-base font-bold text-slate-800">🏢 {listing.companyName}</p>
           )}
         </div>
       </div>
