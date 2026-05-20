@@ -8,7 +8,7 @@ import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
 import type { Listing } from '@/lib/types'
 
-const ADMIN_EMAIL = 'ozcansonmez.arc@gmail.com'
+const ADMIN_EMAIL = 'ozcansonmez40@gmail.com'
 
 export default function AdminPage() {
   const router = useRouter()
