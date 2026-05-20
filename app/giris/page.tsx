@@ -102,10 +102,7 @@ export default function GirisPage() {
     if (!isFirebaseConfigured || !auth) return
     getRedirectResult(auth).then(result => {
       if (result) router.push('/')
-    }).catch((err: unknown) => {
-      const code = (err as { code?: string }).code
-      if (code) setError(`Google ile giriş başarısız. (${code})`)
-    })
+    }).catch(() => {})
   }, [router])
 
   async function handleGoogle() {
