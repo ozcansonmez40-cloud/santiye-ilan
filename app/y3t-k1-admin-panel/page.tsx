@@ -19,10 +19,19 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) { router.replace('/giris'); return }
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) {
         router.replace('/')
         return
+      }
+      const tokenResult = await user.getIdTokenResult()
+      if (!tokenResult.claims.admin) {
+        const idToken = await user.getIdToken()
+        await fetch('/api/set-admin-claim', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${idToken}` },
+        })
+        await user.getIdToken(true)
       }
       setAuthed(true)
     })
