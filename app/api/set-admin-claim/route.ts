@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    await adminAuth.setCustomUserClaims(decoded.uid, { admin: true })
+    if (!decoded.admin) {
+      await adminAuth.setCustomUserClaims(decoded.uid, { admin: true })
+    }
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
