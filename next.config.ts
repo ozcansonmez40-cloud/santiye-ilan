@@ -3,18 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["santiyeilan.local"],
   serverExternalPackages: ["firebase-admin"],
-  async rewrites() {
-    return [
-      {
-        source: '/__/auth/:path*',
-        destination: 'https://santiye-ilan.firebaseapp.com/__/auth/:path*',
-      },
-      {
-        source: '/__/firebase/:path*',
-        destination: 'https://santiye-ilan.firebaseapp.com/__/firebase/:path*',
-      },
-    ]
-  },
 };
 
 export default nextConfig;
