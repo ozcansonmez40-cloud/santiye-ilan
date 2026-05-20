@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db, isFirebaseConfigured } from '@/lib/firebase'
 
 export default function KvkkTalepPage() {
   const [name, setName] = useState('')
@@ -14,21 +16,20 @@ export default function KvkkTalepPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!isFirebaseConfigured || !db) {
+      setSubmitError('Sistem şu an kullanılamıyor. Lütfen ozcansonmez40@gmail.com adresine e-posta gönderin.')
+      return
+    }
     setLoading(true)
     setSubmitError('')
     try {
-      const res = await fetch(`https://formsubmit.co/ajax/ozcansonmez40@gmail.com`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          'Ad Soyad': name,
-          'E-posta': email,
-          'Talep Türü': requestType,
-          'Açıklama': message,
-          _subject: `Saha İlan KVKK Talebi: ${requestType}`,
-        }),
+      await addDoc(collection(db, 'kvkk_requests'), {
+        name,
+        email,
+        requestType,
+        message,
+        createdAt: serverTimestamp(),
       })
-      if (!res.ok) throw new Error('Gönderim başarısız')
       setSent(true)
     } catch {
       setSubmitError('Talep gönderilemedi. Lütfen ozcansonmez40@gmail.com adresine e-posta gönderin.')
