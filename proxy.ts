@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function proxy(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
-  const isDev = process.env.NODE_ENV === 'development'
-
+export function proxy(_request: NextRequest) {
   const csp = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};
-    style-src 'self' 'nonce-${nonce}' 'unsafe-inline';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline';
     img-src 'self' data: https:;
-    font-src 'self';
+    font-src 'self' data:;
     connect-src 'self'
       https://*.googleapis.com
       https://*.firebase.com
@@ -20,15 +17,10 @@ export function proxy(request: NextRequest) {
     frame-ancestors 'none';
     object-src 'none';
     base-uri 'self';
-    form-action 'self';
     upgrade-insecure-requests;
   `.replace(/\s{2,}/g, ' ').trim()
 
-  const reqHeaders = new Headers(request.headers)
-  reqHeaders.set('x-nonce', nonce)
-  reqHeaders.set('Content-Security-Policy', csp)
-
-  const response = NextResponse.next({ request: { headers: reqHeaders } })
+  const response = NextResponse.next()
   response.headers.set('Content-Security-Policy', csp)
   response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-Content-Type-Options', 'nosniff')
