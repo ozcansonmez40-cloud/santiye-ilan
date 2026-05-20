@@ -24,6 +24,7 @@ export default function GirisPage() {
   const [info, setInfo] = useState('')
   const [loading, setLoading] = useState(false)
   const [ageConfirmed, setAgeConfirmed] = useState(false)
+  const [termsConfirmed, setTermsConfirmed] = useState(false)
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -44,6 +45,10 @@ export default function GirisPage() {
     }
     if (mode === 'kayit' && !ageConfirmed) {
       setError('Devam etmek için 18 yaşında veya üzerinde olduğunuzu onaylamalısınız.')
+      return
+    }
+    if (mode === 'kayit' && !termsConfirmed) {
+      setError('Kullanım Şartları ve Gizlilik Politikasını kabul etmeniz gerekmektedir.')
       return
     }
 
@@ -287,6 +292,20 @@ export default function GirisPage() {
                     18 yaşında veya üzerinde olduğumu onaylıyorum. İnşaat sektöründe 18 yaş altı çalışma yasal olarak yasaktır.
                   </span>
                 </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={termsConfirmed}
+                    onChange={e => setTermsConfirmed(e.target.checked)}
+                    className="mt-0.5 accent-amber-500"
+                  />
+                  <span className="text-xs text-slate-600">
+                    <Link href="/kullanim-sartlari" className="text-amber-600 underline" target="_blank">Kullanım Şartları</Link>
+                    {' '}ve{' '}
+                    <Link href="/gizlilik" className="text-amber-600 underline" target="_blank">Gizlilik Politikası</Link>
+                    {`'nı`} okudum ve kabul ediyorum.
+                  </span>
+                </label>
               </>
             )}
 
@@ -306,13 +325,6 @@ export default function GirisPage() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
-          Devam ederek{' '}
-          <Link href="/kullanim-sartlari" className="underline">Kullanım Şartları</Link>
-          {' '}ve{' '}
-          <Link href="/gizlilik" className="underline">Gizlilik Politikası</Link>
-          {`'nı`} kabul etmiş olursunuz.
-        </p>
       </div>
     </div>
   )
