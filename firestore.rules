@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'ozcansonmez40@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /listings/{listingId} {
+      allow read: if resource.data.status == 'active' || isAdmin();
+
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'active'
+        && request.resource.data.isFeatured == false
+        && request.resource.data.isUrgent == false
+        && request.resource.data.viewCount == 0
+        && request.resource.data.contactClickCount == 0
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.keys().hasAll(['userId', 'title', 'status', 'slug'])
+        && request.resource.data.keys().hasOnly([
+             'userId', 'slug', 'listingType', 'title', 'city', 'district', 'position',
+             'projectType', 'workType', 'experienceYears', 'salaryMin', 'salaryMax',
+             'salaryText', 'description', 'companyName', 'isFeatured', 'isUrgent',
+             'status', 'viewCount', 'contactClickCount', 'createdAt', 'updatedAt'
+           ]);
+
+      allow update: if isOwner(resource.data.userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+             'title', 'city', 'district', 'position', 'projectType', 'workType',
+             'experienceYears', 'salaryMin', 'salaryMax', 'salaryText',
+             'description', 'companyName', 'status', 'updatedAt'
+           ])
+        && request.resource.data.status in ['active', 'expired']
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 5000;
+
+      allow update: if isAdmin();
+
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    match /listing_contacts/{listingId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && exists(/databases/$(database)/documents/listings/$(listingId))
+        && get(/databases/$(database)/documents/listings/$(listingId)).data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['userId', 'contactName', 'contactPhone', 'contactEmail', 'whatsappEnabled'])
+        && (!('contactPhone' in request.resource.data) || (request.resource.data.contactPhone is string && request.resource.data.contactPhone.size() <= 20))
+        && (!('contactEmail' in request.resource.data) || (request.resource.data.contactEmail is string && request.resource.data.contactEmail.size() <= 100))
+        && (!('contactName' in request.resource.data) || (request.resource.data.contactName is string && request.resource.data.contactName.size() <= 100));
+
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    match /reports/{reportId} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['listingId', 'listingTitle', 'reason', 'reportedAt'])
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 200
+        && request.resource.data.listingId is string
+        && exists(/databases/$(database)/documents/listings/$(request.resource.data.listingId))
+        && request.resource.data.reportedAt == request.time;
+
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

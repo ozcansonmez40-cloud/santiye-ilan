@@ -70,6 +70,7 @@ export default function IlanımPage() {
     setActionId(id)
     try {
       await deleteDoc(doc(db, 'listings', id))
+      await deleteDoc(doc(db, 'listing_contacts', id)).catch(() => {})
       setListings((prev) => prev.filter((l) => l.id !== id))
     } finally {
       setActionId(null)

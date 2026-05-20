@@ -3,11 +3,11 @@
 import { useEffect, useState, use } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { collection, query, where, limit, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, query, where, limit, getDocs, getDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS, WORK_TYPE_LABELS } from '@/lib/constants'
-import type { Listing } from '@/lib/types'
+import type { Listing, ListingContact } from '@/lib/types'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -24,6 +24,7 @@ const REPORT_REASONS = [
 export default function ListingDetailPage({ params }: PageProps) {
   const { slug } = use(params)
   const [listing, setListing] = useState<Listing | null | 'loading'>('loading')
+  const [contact, setContact] = useState<ListingContact | null>(null)
   const [user, setUser] = useState<User | null | 'loading'>('loading')
   const [showReport, setShowReport] = useState(false)
   const [reportReason, setReportReason] = useState('')
@@ -63,6 +64,19 @@ export default function ListingDetailPage({ params }: PageProps) {
     }
     fetchListing()
   }, [slug])
+
+  useEffect(() => {
+    async function fetchContact() {
+      if (!db || !listing || listing === 'loading' || !user || user === 'loading') return
+      try {
+        const snap = await getDoc(doc(db, 'listing_contacts', listing.id))
+        if (snap.exists()) setContact(snap.data() as ListingContact)
+      } catch {
+        // silent
+      }
+    }
+    fetchContact()
+  }, [listing, user])
 
   async function handleReport() {
     if (!reportReason || !listing || listing === 'loading' || !db) return
@@ -172,17 +186,17 @@ export default function ListingDetailPage({ params }: PageProps) {
 
               {isLoggedIn ? (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  {listing.contactPhone ? (
+                  {contact?.contactPhone ? (
                     <a
-                      href={`tel:${listing.contactPhone}`}
+                      href={`tel:${contact.contactPhone}`}
                       className="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl text-sm transition-colors text-center"
                     >
-                      📞 {listing.contactPhone}
+                      📞 {contact.contactPhone}
                     </a>
                   ) : null}
-                  {listing.whatsappEnabled && listing.contactPhone && (
+                  {contact?.whatsappEnabled && contact?.contactPhone && (
                     <a
-                      href={`https://wa.me/90${listing.contactPhone.replace(/\D/g, '').replace(/^0/, '')}`}
+                      href={`https://wa.me/90${contact.contactPhone.replace(/\D/g, '').replace(/^0/, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
@@ -190,15 +204,15 @@ export default function ListingDetailPage({ params }: PageProps) {
                       💬 WhatsApp ile Ulaş
                     </a>
                   )}
-                  {listing.contactEmail && (
+                  {contact?.contactEmail && (
                     <a
-                      href={`mailto:${listing.contactEmail}`}
+                      href={`mailto:${contact.contactEmail}`}
                       className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition-colors text-center"
                     >
-                      ✉️ {listing.contactEmail}
+                      ✉️ {contact.contactEmail}
                     </a>
                   )}
-                  {!listing.contactPhone && !listing.contactEmail && (
+                  {!contact?.contactPhone && !contact?.contactEmail && (
                     <p className="text-sm text-slate-400">İletişim bilgisi belirtilmemiş.</p>
                   )}
                 </div>
@@ -225,8 +239,8 @@ export default function ListingDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-              {listing.contactName && isLoggedIn && (
-                <p className="text-xs text-slate-400 mt-2 text-center">{listing.contactName}</p>
+              {contact?.contactName && isLoggedIn && (
+                <p className="text-xs text-slate-400 mt-2 text-center">{contact.contactName}</p>
               )}
             </div>
 

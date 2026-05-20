@@ -65,9 +65,9 @@ export default function GirisPage() {
       if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
         setError('E-posta veya şifre hatalı.')
       } else if (code === 'auth/email-already-in-use') {
-        setError('Bu e-posta zaten kayıtlı.')
+        setError('Kayıt sırasında bir hata oluştu. Farklı bir e-posta deneyin veya giriş yapın.')
       } else if (code === 'auth/weak-password') {
-        setError('Şifre en az 6 karakter olmalı.')
+        setError('Şifre çok zayıf. Daha güçlü bir şifre belirleyin.')
       } else {
         setError('Bir hata oluştu. Tekrar deneyin.')
       }
@@ -88,7 +88,7 @@ export default function GirisPage() {
     } catch (err: unknown) {
       const code = (err as { code?: string }).code
       if (code === 'auth/user-not-found') {
-        setError('Bu e-posta adresiyle kayıtlı hesap bulunamadı.')
+        setError('Şifre sıfırlama bağlantısı gönderildi (hesap varsa).')
       } else {
         setError('Bir hata oluştu. Tekrar deneyin.')
       }

@@ -20,7 +20,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) { router.replace('/giris'); return }
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (!user || user.email !== ADMIN_EMAIL) {
+      if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) {
         router.replace('/')
         return
       }
@@ -48,6 +48,7 @@ export default function AdminPage() {
     if (!db || !confirm('Bu ilanı silmek istediğinden emin misin?')) return
     setDeletingId(id)
     await deleteDoc(doc(db, 'listings', id))
+    await deleteDoc(doc(db, 'listing_contacts', id)).catch(() => {})
     setListings(prev => prev.filter(l => l.id !== id))
     setDeletingId(null)
   }

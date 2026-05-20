@@ -3,6 +3,7 @@
 export const mockListings: Listing[] = [
   {
     id: "listing-1",
+    userId: "mock-user",
     slug: "istanbul-kadikoy-santiye-sefi-araniyor",
     listingType: "employer",
     title: "İstanbul / Kadıköy - Şantiye Şefi Aranıyor",
@@ -30,6 +31,7 @@ export const mockListings: Listing[] = [
   },
   {
     id: "listing-2",
+    userId: "mock-user",
     slug: "ankara-cankaya-insaat-muhendisi-araniyor",
     listingType: "employer",
     title: "Ankara / Çankaya - İnşaat Mühendisi Aranıyor",
@@ -56,6 +58,7 @@ export const mockListings: Listing[] = [
   },
   {
     id: "listing-3",
+    userId: "mock-user",
     slug: "istanbul-avrupa-yakasi-santiye-sefligi-icin-uygunum",
     listingType: "worker",
     title: "İstanbul Avrupa Yakası - Şantiye Şefliği İçin Uygunum",
@@ -81,6 +84,7 @@ export const mockListings: Listing[] = [
   },
   {
     id: "listing-4",
+    userId: "mock-user",
     slug: "izmir-bornova-mimar-is-ariyorum",
     listingType: "worker",
     title: "İzmir / Bornova - Mimar İş Arıyorum",
@@ -105,6 +109,7 @@ export const mockListings: Listing[] = [
   },
   {
     id: "listing-5",
+    userId: "mock-user",
     slug: "bursa-nilufer-saha-formeni-araniyor",
     listingType: "employer",
     title: "Bursa / Nilüfer - Saha Formeni Aranıyor",
@@ -131,6 +136,7 @@ export const mockListings: Listing[] = [
   },
   {
     id: "listing-6",
+    userId: "mock-user",
     slug: "antalya-muratpasa-elektrik-teknikeri-araniyor",
     listingType: "employer",
     title: "Antalya / Muratpaşa - Elektrik Teknikeri Aranıyor",

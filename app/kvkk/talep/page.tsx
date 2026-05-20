@@ -9,13 +9,15 @@ export default function KvkkTalepPage() {
   const [requestType, setRequestType] = useState('')
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+    setSubmitError('')
     try {
-      await fetch(`https://formsubmit.co/ajax/ozcansonmez.arc@gmail.com`, {
+      const res = await fetch(`https://formsubmit.co/ajax/ozcansonmez40@gmail.com`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
@@ -26,9 +28,10 @@ export default function KvkkTalepPage() {
           _subject: `Saha İlan KVKK Talebi: ${requestType}`,
         }),
       })
+      if (!res.ok) throw new Error('Gönderim başarısız')
       setSent(true)
     } catch {
-      setSent(true)
+      setSubmitError('Talep gönderilemedi. Lütfen ozcansonmez40@gmail.com adresine e-posta gönderin.')
     } finally {
       setLoading(false)
     }
@@ -99,6 +102,11 @@ export default function KvkkTalepPage() {
                   className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                 />
               </div>
+              {submitError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-700">
+                  {submitError}
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={loading}

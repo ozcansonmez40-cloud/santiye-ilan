@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { TURKISH_CITIES, CITY_DISTRICTS, POSITIONS, LISTING_TYPE_LABELS, ABROAD_COUNTRIES } from '@/lib/constants'
@@ -96,10 +96,12 @@ export default function ListingForm() {
     setSubmitError('')
     try {
       const slug = `${slugify(form.title)}-${Date.now()}`
+      const uid = (user as { uid: string }).uid
+      const { contactName, contactPhone, contactEmail, whatsappEnabled, ...listingData } = form
       const docRef = await addDoc(collection(db, 'listings'), {
-        ...form,
+        ...listingData,
         slug,
-        userId: (user as { uid: string }).uid,
+        userId: uid,
         status: 'active',
         isFeatured: false,
         isUrgent: false,
@@ -107,6 +109,13 @@ export default function ListingForm() {
         contactClickCount: 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+      })
+      await setDoc(doc(db, 'listing_contacts', docRef.id), {
+        contactName,
+        contactPhone,
+        contactEmail,
+        whatsappEnabled,
+        userId: uid,
       })
       router.push(`/ilanim`)
     } catch {

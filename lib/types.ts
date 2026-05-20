@@ -20,8 +20,17 @@ export type PaymentPackageType = 'featured' | 'urgent' | 'monthly_company'
 
 export type PaymentStatus = 'pending' | 'success' | 'failed' | 'refunded'
 
+export type ListingContact = {
+  contactName?: string
+  contactPhone?: string
+  contactEmail?: string
+  whatsappEnabled?: boolean
+  userId: string
+}
+
 export type Listing = {
   id: string
+  userId: string
   slug: string
   listingType: ListingType
   title: string
