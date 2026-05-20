@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
+  onAuthStateChanged,
   sendPasswordResetEmail,
   GoogleAuthProvider,
 } from 'firebase/auth'
@@ -27,6 +28,39 @@ export default function GirisPage() {
   const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [termsConfirmed, setTermsConfirmed] = useState(false)
 
+  useEffect(() => {
+    if (!isFirebaseConfigured || !auth) return
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) router.replace('/')
+    })
+    return () => unsubscribe()
+  }, [router])
+
+  function ensureAuthReady() {
+    if (isFirebaseConfigured && auth) return true
+    setError('Giriş sistemi şu an hazır değil. Firebase ve Vercel ortam değişkenlerini kontrol edin.')
+    return false
+  }
+
+  function getGoogleErrorMessage(code?: string) {
+    if (code === 'auth/unauthorized-domain') {
+      return 'Bu domain Firebase Authentication için yetkili değil. Firebase Console > Authentication > Settings > Authorized domains alanına sahailan.com eklenmeli.'
+    }
+    if (code === 'auth/popup-blocked') {
+      return 'Tarayıcı Google giriş penceresini engelledi. Popup izni verip tekrar deneyin.'
+    }
+    if (code === 'auth/popup-closed-by-user') {
+      return 'Google giriş penceresi tamamlanmadan kapatıldı.'
+    }
+    if (code === 'auth/operation-not-allowed') {
+      return 'Google ile giriş Firebase Console üzerinde aktif değil.'
+    }
+    if (code === 'auth/network-request-failed') {
+      return 'Ağ bağlantısı nedeniyle giriş tamamlanamadı. Tekrar deneyin.'
+    }
+    return `Google ile giriş başarısız. (${code ?? 'bilinmeyen hata'})`
+  }
+
   function switchMode(next: Mode) {
     setMode(next)
     setError('')
@@ -37,8 +71,10 @@ export default function GirisPage() {
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!isFirebaseConfigured || !auth) return
     setError('')
+    if (!ensureAuthReady()) return
+    const currentAuth = auth
+    if (!currentAuth) return
 
     if (mode === 'kayit' && password !== passwordConfirm) {
       setError('Şifreler eşleşmiyor.')
@@ -56,9 +92,9 @@ export default function GirisPage() {
     setLoading(true)
     try {
       if (mode === 'giris') {
-        await signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(currentAuth, email, password)
       } else {
-        await createUserWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(currentAuth, email, password)
       }
       router.push('/')
     } catch (err: unknown) {
@@ -79,12 +115,14 @@ export default function GirisPage() {
 
   async function handlePasswordReset(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!isFirebaseConfigured || !auth) return
     setError('')
     setInfo('')
+    if (!ensureAuthReady()) return
+    const currentAuth = auth
+    if (!currentAuth) return
     setLoading(true)
     try {
-      await sendPasswordResetEmail(auth, email)
+      await sendPasswordResetEmail(currentAuth, email)
       setInfo('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu kontrol edin.')
     } catch (err: unknown) {
       const code = (err as { code?: string }).code
@@ -102,18 +140,27 @@ export default function GirisPage() {
     if (!isFirebaseConfigured || !auth) return
     getRedirectResult(auth).then(result => {
       if (result) router.push('/')
-    }).catch(() => {})
+    }).catch((err: unknown) => {
+      const code = (err as { code?: string }).code
+      setError(getGoogleErrorMessage(code))
+    })
   }, [router])
 
   async function handleGoogle() {
-    if (!isFirebaseConfigured || !auth) return
     setError('')
+    if (!ensureAuthReady()) return
+    const currentAuth = auth
+    if (!currentAuth) return
+    setLoading(true)
     try {
       const provider = new GoogleAuthProvider()
-      await signInWithRedirect(auth, provider)
+      await signInWithPopup(currentAuth, provider)
+      router.push('/')
     } catch (err: unknown) {
       const code = (err as { code?: string }).code
-      setError(`Google ile giriş başarısız. (${code ?? 'bilinmeyen hata'})`)
+      setError(getGoogleErrorMessage(code))
+    } finally {
+      setLoading(false)
     }
   }
 
