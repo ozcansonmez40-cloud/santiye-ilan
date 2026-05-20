@@ -43,7 +43,19 @@ service cloud.firestore {
         && request.resource.data.title.size() > 0
         && request.resource.data.title.size() <= 200
         && request.resource.data.description is string
-        && request.resource.data.description.size() <= 5000;
+        && request.resource.data.description.size() <= 5000
+        && (!('city' in request.resource.data.diff(resource.data).affectedKeys())
+            || (request.resource.data.city is string && request.resource.data.city.size() <= 100))
+        && (!('position' in request.resource.data.diff(resource.data).affectedKeys())
+            || (request.resource.data.position is string && request.resource.data.position.size() <= 100))
+        && (!('district' in request.resource.data.diff(resource.data).affectedKeys())
+            || (request.resource.data.district is string && request.resource.data.district.size() <= 100))
+        && (!('experienceYears' in request.resource.data.diff(resource.data).affectedKeys())
+            || request.resource.data.experienceYears is int)
+        && (!('salaryMin' in request.resource.data.diff(resource.data).affectedKeys())
+            || request.resource.data.salaryMin is number)
+        && (!('salaryMax' in request.resource.data.diff(resource.data).affectedKeys())
+            || request.resource.data.salaryMax is number);
 
       allow update: if isAdmin();
 
@@ -62,7 +74,14 @@ service cloud.firestore {
         && (!('contactEmail' in request.resource.data) || (request.resource.data.contactEmail is string && request.resource.data.contactEmail.size() <= 100))
         && (!('contactName' in request.resource.data) || (request.resource.data.contactName is string && request.resource.data.contactName.size() <= 100));
 
-      allow update: if isOwner(resource.data.userId) || isAdmin();
+      allow update: if isOwner(resource.data.userId)
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.keys().hasOnly(['userId', 'contactName', 'contactPhone', 'contactEmail', 'whatsappEnabled'])
+        && (!('contactPhone' in request.resource.data) || (request.resource.data.contactPhone is string && request.resource.data.contactPhone.size() <= 20))
+        && (!('contactEmail' in request.resource.data) || (request.resource.data.contactEmail is string && request.resource.data.contactEmail.size() <= 100))
+        && (!('contactName' in request.resource.data) || (request.resource.data.contactName is string && request.resource.data.contactName.size() <= 100));
+
+      allow update: if isAdmin();
       allow delete: if isOwner(resource.data.userId) || isAdmin();
     }
 
