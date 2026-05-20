@@ -54,7 +54,7 @@ export default function FeaturedListing({ listing }: Props) {
       </div>
 
       <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-        <span>{listing.companyName ?? listing.contactName}</span>
+        <span>{listing.listingType === 'employer' ? (listing.companyName || listing.position) : listing.position}</span>
         <span>{listing.viewCount} görüntülenme</span>
       </div>
     </Link>

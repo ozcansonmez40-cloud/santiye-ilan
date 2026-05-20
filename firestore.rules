@@ -14,7 +14,7 @@ service cloud.firestore {
     }
 
     match /listings/{listingId} {
-      allow read: if resource.data.status == 'active' || isAdmin();
+      allow read: if resource.data.status == 'active' || isOwner(resource.data.userId) || isAdmin();
 
       allow create: if request.auth != null
         && request.resource.data.userId == request.auth.uid

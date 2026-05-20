@@ -69,10 +69,22 @@ export default function ListingForm() {
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }))
   }
 
+  function handleListingTypeChange(type: ListingType) {
+    setForm((prev) => ({
+      ...prev,
+      listingType: type,
+      companyName: type === 'worker' ? '' : prev.companyName,
+      city: type === 'worker' && prev.city === 'Yurtdışı' ? '' : prev.city,
+      district: type === 'worker' && prev.city === 'Yurtdışı' ? '' : prev.district,
+    }))
+    setErrors((prev) => ({ ...prev, listingType: undefined, city: undefined }))
+  }
+
   function validate(): boolean {
     const next: FieldErrors = {}
     if (!form.title.trim()) next.title = 'Başlık zorunludur.'
     if (!form.city) next.city = 'Şehir seçiniz.'
+    if (form.listingType === 'worker' && form.city === 'Yurtdışı') next.city = 'İş arayan ilanları için Türkiye içinden şehir seçiniz.'
     if (!form.position) next.position = 'Pozisyon seçiniz.'
     if (!form.description.trim()) next.description = 'Açıklama zorunludur.'
     if (!form.contactName.trim()) next.contactName = 'İletişim adı zorunludur.'
@@ -97,9 +109,15 @@ export default function ListingForm() {
     try {
       const slug = `${slugify(form.title)}-${Date.now()}`
       const uid = (user as { uid: string }).uid
-      const { contactName, contactPhone, contactEmail, whatsappEnabled, ...listingData } = form
-      const docRef = await addDoc(collection(db, 'listings'), {
+      const { contactName, contactPhone, contactEmail, whatsappEnabled, companyName, ...listingData } = form
+      const cleanListingData = {
         ...listingData,
+        ...(form.listingType === 'employer' && companyName.trim()
+          ? { companyName: companyName.trim() }
+          : {}),
+      }
+      const docRef = await addDoc(collection(db, 'listings'), {
+        ...cleanListingData,
         slug,
         userId: uid,
         status: 'active',
@@ -158,7 +176,7 @@ export default function ListingForm() {
                 name="listingType"
                 value={type}
                 checked={form.listingType === type}
-                onChange={() => set('listingType', type)}
+                onChange={() => handleListingTypeChange(type)}
                 className="accent-amber-500"
               />
               <span className="text-sm text-slate-700">{LISTING_TYPE_LABELS[type]}</span>
@@ -185,14 +203,16 @@ export default function ListingForm() {
             className={inputCls(errors.city)}
           >
             <option value="">Şehir seçin</option>
-            <option value="Yurtdışı">🌍 Yurtdışı</option>
+            {form.listingType === 'employer' && (
+              <option value="Yurtdışı">🌍 Yurtdışı</option>
+            )}
             {TURKISH_CITIES.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </Field>
 
-        {form.city === 'Yurtdışı' ? (
+        {form.listingType === 'employer' && form.city === 'Yurtdışı' ? (
           <Field label="Ülke">
             <select
               value={form.district}

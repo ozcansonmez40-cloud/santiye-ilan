@@ -31,7 +31,7 @@ export default function JobCard({ listing }: Props) {
       href={`/ilanlar/${listing.slug}`}
       className="block bg-white rounded-xl border border-slate-200 hover:border-amber-400 hover:shadow-md transition-all p-5 group"
     >
-      {listing.companyName && (
+      {listing.listingType === 'employer' && listing.companyName && (
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
           {listing.companyName}
         </p>

@@ -161,7 +161,7 @@ export default function ListingDetailPage({ params }: PageProps) {
               {listing.salaryText && (
                 <InfoItem label="Ücret" value={listing.salaryText} />
               )}
-              {listing.companyName && (
+              {listing.listingType === 'employer' && listing.companyName && (
                 <InfoItem label="Firma" value={listing.companyName} />
               )}
             </div>
