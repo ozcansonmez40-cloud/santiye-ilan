@@ -1,247 +1,39 @@
-import type { Metadata } from 'next'
-import { mockListings, mockUsers, mockPayments } from '@/lib/mockData'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { collection, getDocs, deleteDoc, doc, orderBy, query } from 'firebase/firestore'
+import { db, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
-
-export const metadata: Metadata = {
-  title: 'Admin Paneli | Saha İlan',
-}
-
-// TODO: Protect this page with Firebase Auth role check
-// import { getAuth } from 'firebase-admin/auth'
-// Verify ID token and check custom claim: role === 'admin'
-// If not admin, redirect to /giris with notFound() or redirect()
+import type { Listing } from '@/lib/types'
 
 export default function AdminPage() {
-  const totalListings = mockListings.length
-  const pendingListings = mockListings.filter((l) => l.status === 'pending_payment')
-  const approvedListings = mockListings.filter((l) => l.status === 'active')
-  const featuredListings = mockListings.filter((l) => l.isFeatured)
-  const totalPayments = mockPayments.reduce((sum, p) => sum + (p.status === 'success' ? p.amount : 0), 0)
+  const [listings, setListings] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  return (
-    <div className="min-h-screen bg-slate-100">
-      {/* Admin header */}
-      <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
-        <div>
-          <p className="text-amber-400 font-bold text-lg">Saha İlan</p>
-          <p className="text-slate-400 text-xs">Admin Paneli</p>
-        </div>
-        <span className="text-xs bg-amber-500 text-slate-900 font-semibold px-3 py-1 rounded-full">
-          Mock Veri — Firebase bağlı değil
-        </span>
-      </div>
+  useEffect(() => {
+    async function fetchListings() {
+      if (!isFirebaseConfigured || !db) return
+      const q = query(collection(db, 'listings'), orderBy('createdAt', 'desc'))
+      const snap = await getDocs(q)
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Listing))
+      setListings(data)
+      setLoading(false)
+    }
+    fetchListings()
+  }, [])
 
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* ─── Stats ──────────────────────────────────────── */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <StatCard label="Toplam İlan" value={totalListings} />
-          <StatCard label="Bekleyen" value={pendingListings.length} accent="amber" />
-          <StatCard label="Onaylı" value={approvedListings.length} accent="green" />
-          <StatCard label="Öne Çıkan" value={featuredListings.length} accent="blue" />
-          <StatCard label="Kullanıcı" value={mockUsers.length} />
-          <StatCard label="Gelir (TRY)" value={`₺${totalPayments.toLocaleString('tr-TR')}`} accent="purple" />
-        </div>
-
-        {/* ─── Pending approval ───────────────────────────── */}
-        {pendingListings.length > 0 && (
-          <section className="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 bg-amber-50 border-b border-amber-100 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <h2 className="font-semibold text-amber-800 text-sm">
-                Onay Bekleyen İlanlar ({pendingListings.length})
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-100">
-                  <ListingTableHead />
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {pendingListings.map((l) => (
-                    <ListingTableRow key={l.id} listing={l} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="px-5 py-3 border-t border-slate-100 flex gap-2">
-              {/* TODO: Wire up Firebase approve/reject calls */}
-              {/* await updateDoc(doc(db, 'listings', id), { status: 'approved' }) */}
-              <button className="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg font-semibold transition-colors">
-                Seçilenleri Onayla
-              </button>
-              <button className="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold transition-colors">
-                Seçilenleri Reddet
-              </button>
-            </div>
-          </section>
-        )}
-
-        {/* ─── All listings ────────────────────────────────── */}
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100">
-            <h2 className="font-semibold text-slate-800 text-sm">
-              Tüm İlanlar ({totalListings})
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-100">
-                <ListingTableHead showActions />
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {mockListings.map((l) => (
-                  <ListingTableRow key={l.id} listing={l} showActions />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* ─── Users ───────────────────────────────────────── */}
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100">
-            <h2 className="font-semibold text-slate-800 text-sm">
-              Kullanıcılar ({mockUsers.length})
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-100">
-                <tr>
-                  {['Ad', 'E-posta', 'Rol', 'Şehir', 'Kayıt Tarihi'].map((h) => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {mockUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-700">{u.displayName}</td>
-                    <td className="px-4 py-3 text-slate-500">{u.email}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        u.role === 'admin'
-                          ? 'bg-purple-100 text-purple-700'
-                          : u.role === 'employer'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-emerald-100 text-emerald-700'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{u.city ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-400 text-xs">
-                      {new Date(u.createdAt).toLocaleDateString('tr-TR')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* ─── Payments ────────────────────────────────────── */}
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100">
-            <h2 className="font-semibold text-slate-800 text-sm">
-              Ödeme Kayıtları ({mockPayments.length})
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-100">
-                <tr>
-                  {['İlan ID', 'Kullanıcı', 'Paket', 'Tutar', 'Sağlayıcı', 'Durum', 'Tarih'].map((h) => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {mockPayments.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{p.listingId}</td>
-                    <td className="px-4 py-3 text-slate-500 text-xs">{p.userId}</td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs font-semibold text-slate-600">{p.packageType}</span>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-slate-700">₺{p.amount}</td>
-                    <td className="px-4 py-3 text-slate-500">{p.provider}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        p.status === 'success'
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : p.status === 'pending'
-                          ? 'bg-amber-100 text-amber-700'
-                          : 'bg-red-100 text-red-600'
-                      }`}>
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-400 text-xs">
-                      {new Date(p.createdAt).toLocaleDateString('tr-TR')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {/* TODO: Real payments via PayTR or iyzico webhook → Firebase Cloud Function → update status in Firestore */}
-        </section>
-      </div>
-    </div>
-  )
-}
-
-function StatCard({
-  label,
-  value,
-  accent,
-}: {
-  label: string
-  value: number | string
-  accent?: 'amber' | 'green' | 'blue' | 'purple'
-}) {
-  const colors = {
-    amber: 'text-amber-600',
-    green: 'text-emerald-600',
-    blue: 'text-blue-600',
-    purple: 'text-purple-600',
+  async function handleDelete(id: string) {
+    if (!db || !confirm('Bu ilanı silmek istediğinden emin misin?')) return
+    setDeletingId(id)
+    await deleteDoc(doc(db, 'listings', id))
+    setListings(prev => prev.filter(l => l.id !== id))
+    setDeletingId(null)
   }
-  const valueColor = accent ? colors[accent] : 'text-slate-800'
 
-  return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-center">
-      <p className={`text-2xl font-bold ${valueColor}`}>{value}</p>
-      <p className="text-xs text-slate-500 mt-1">{label}</p>
-    </div>
-  )
-}
+  const activeCount = listings.filter(l => l.status === 'active').length
+  const expiredCount = listings.filter(l => l.status === 'expired').length
 
-function ListingTableHead({ showActions }: { showActions?: boolean }) {
-  const headers = ['Başlık', 'Tür', 'Şehir', 'Pozisyon', 'Durum', 'Görüntülenme', 'Tarih']
-  if (showActions) headers.push('İşlem')
-  return (
-    <tr>
-      {headers.map((h) => (
-        <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-          {h}
-        </th>
-      ))}
-    </tr>
-  )
-}
-
-function ListingTableRow({
-  listing,
-  showActions,
-}: {
-  listing: (typeof mockListings)[number]
-  showActions?: boolean
-}) {
   const statusColors: Record<string, string> = {
     active: 'bg-emerald-100 text-emerald-700',
     pending_payment: 'bg-amber-100 text-amber-700',
@@ -250,37 +42,114 @@ function ListingTableRow({
     expired: 'bg-slate-100 text-slate-400',
   }
 
+  const statusLabels: Record<string, string> = {
+    active: 'Yayında',
+    pending_payment: 'Bekliyor',
+    rejected: 'Reddedildi',
+    draft: 'Taslak',
+    expired: 'Pasif',
+  }
+
   return (
-    <tr className="hover:bg-slate-50">
-      <td className="px-4 py-3">
-        <p className="font-medium text-slate-700 line-clamp-1 max-w-[200px]">{listing.title}</p>
-      </td>
-      <td className="px-4 py-3">
-        <span className="text-xs text-slate-500">{LISTING_TYPE_LABELS[listing.listingType]}</span>
-      </td>
-      <td className="px-4 py-3 text-slate-500 text-xs">{listing.city}</td>
-      <td className="px-4 py-3 text-slate-500 text-xs">{listing.position}</td>
-      <td className="px-4 py-3">
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusColors[listing.status] ?? ''}`}>
-          {listing.status}
+    <div className="min-h-screen bg-slate-100">
+      <div className="bg-slate-900 px-6 py-4 flex items-center justify-between">
+        <div>
+          <p className="text-amber-400 font-bold text-lg">Saha İlan</p>
+          <p className="text-slate-400 text-xs">Admin Paneli</p>
+        </div>
+        <span className="text-xs bg-emerald-500 text-white font-semibold px-3 py-1 rounded-full">
+          Firebase Bağlı
         </span>
-      </td>
-      <td className="px-4 py-3 text-slate-400 text-xs">{listing.viewCount}</td>
-      <td className="px-4 py-3 text-slate-400 text-xs">
-        {new Date(listing.createdAt).toLocaleDateString('tr-TR')}
-      </td>
-      {showActions && (
-        <td className="px-4 py-3">
-          <div className="flex gap-1">
-            <button className="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2 py-1 rounded font-medium transition-colors">
-              Onayla
-            </button>
-            <button className="text-xs bg-red-50 text-red-500 hover:bg-red-100 px-2 py-1 rounded font-medium transition-colors">
-              Reddet
-            </button>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Toplam İlan" value={listings.length} />
+          <StatCard label="Yayında" value={activeCount} accent="green" />
+          <StatCard label="Pasif" value={expiredCount} />
+          <StatCard label="Diğer" value={listings.length - activeCount - expiredCount} accent="amber" />
+        </div>
+
+        <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h2 className="font-semibold text-slate-800 text-sm">
+              Tüm İlanlar ({listings.length})
+            </h2>
           </div>
-        </td>
-      )}
-    </tr>
+
+          {loading ? (
+            <div className="p-8 text-center text-slate-400 text-sm">Yükleniyor...</div>
+          ) : listings.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-sm">Henüz ilan yok.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    {['Başlık', 'Tür', 'Şehir', 'Pozisyon', 'Durum', 'Tarih', 'İşlem'].map(h => (
+                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {listings.map(l => (
+                    <tr key={l.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3">
+                        <a
+                          href={`/ilanlar/${l.slug}`}
+                          target="_blank"
+                          className="font-medium text-slate-700 hover:text-amber-600 line-clamp-1 max-w-[200px] block"
+                        >
+                          {l.title}
+                        </a>
+                        {l.companyName && (
+                          <p className="text-xs text-slate-400">{l.companyName}</p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-slate-500 text-xs">{LISTING_TYPE_LABELS[l.listingType]}</td>
+                      <td className="px-4 py-3 text-slate-500 text-xs">{l.city}</td>
+                      <td className="px-4 py-3 text-slate-500 text-xs">{l.position}</td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusColors[l.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                          {statusLabels[l.status] ?? l.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-slate-400 text-xs">
+                        {new Date(l.createdAt).toLocaleDateString('tr-TR')}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleDelete(l.id)}
+                          disabled={deletingId === l.id}
+                          className="text-xs bg-red-50 text-red-500 hover:bg-red-100 px-2 py-1 rounded font-medium transition-colors disabled:opacity-50"
+                        >
+                          {deletingId === l.id ? '...' : 'Sil'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  )
+}
+
+function StatCard({ label, value, accent }: {
+  label: string
+  value: number
+  accent?: 'amber' | 'green'
+}) {
+  const colors = { amber: 'text-amber-600', green: 'text-emerald-600' }
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-center">
+      <p className={`text-2xl font-bold ${accent ? colors[accent] : 'text-slate-800'}`}>{value}</p>
+      <p className="text-xs text-slate-500 mt-1">{label}</p>
+    </div>
   )
 }
