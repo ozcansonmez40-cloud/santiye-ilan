@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   sendPasswordResetEmail,
   GoogleAuthProvider,
 } from 'firebase/auth'
@@ -97,19 +98,18 @@ export default function GirisPage() {
     }
   }
 
+  useEffect(() => {
+    if (!isFirebaseConfigured || !auth) return
+    getRedirectResult(auth).then(result => {
+      if (result) router.push('/')
+    }).catch(() => {})
+  }, [router])
+
   async function handleGoogle() {
     if (!isFirebaseConfigured || !auth) return
     setError('')
-    setLoading(true)
-    try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-      router.push('/')
-    } catch {
-      setError('Google ile giriş başarısız.')
-    } finally {
-      setLoading(false)
-    }
+    const provider = new GoogleAuthProvider()
+    await signInWithRedirect(auth, provider)
   }
 
   if (mode === 'sifre-sifirla') {
