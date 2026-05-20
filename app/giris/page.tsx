@@ -100,7 +100,6 @@ export default function GirisPage() {
   async function handleGoogle() {
     if (!isFirebaseConfigured || !auth) return
     setError('')
-    setLoading(true)
     try {
       const provider = new GoogleAuthProvider()
       await signInWithPopup(auth, provider)
@@ -108,8 +107,6 @@ export default function GirisPage() {
     } catch (err: unknown) {
       const code = (err as { code?: string }).code
       setError(`Google ile giriş başarısız. (${code ?? 'bilinmeyen hata'})`)
-    } finally {
-      setLoading(false)
     }
   }
 
