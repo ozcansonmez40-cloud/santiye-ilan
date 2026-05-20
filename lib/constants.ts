@@ -214,6 +214,7 @@ export const POSITIONS = [
   "Şantiye Sekreteri",
   "Güvenlik Görevlisi",
   "Genel İşçi",
+  "Stajyer",
 ];
 
 export const FIRESTORE_COLLECTIONS = {
