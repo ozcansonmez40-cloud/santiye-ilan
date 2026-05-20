@@ -100,7 +100,7 @@ export default function ListingForm() {
         ...form,
         slug,
         userId: (user as { uid: string }).uid,
-        status: 'pending_payment',
+        status: 'active',
         isFeatured: false,
         isUrgent: false,
         viewCount: 0,
@@ -108,7 +108,7 @@ export default function ListingForm() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       })
-      router.push(`/odeme/${docRef.id}`)
+      router.push(`/ilanim`)
     } catch {
       setSubmitError('İlan kaydedilirken bir hata oluştu. Tekrar deneyin.')
       setLoading(false)
@@ -326,11 +326,8 @@ export default function ListingForm() {
           disabled={loading}
           className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-lg text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? 'Kaydediliyor...' : 'Devam Et → Paket Seç'}
+          {loading ? 'Yayınlanıyor...' : 'İlanı Yayınla'}
         </button>
-        <p className="text-xs text-slate-400 text-center mt-3">
-          Bir sonraki adımda ilan paketinizi seçeceksiniz.
-        </p>
       </div>
     </form>
   )

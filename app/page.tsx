@@ -179,8 +179,8 @@ const HOW_IT_WORKS = [
   },
   {
     step: '2',
-    title: 'Ödeme Yap',
-    desc: 'İlan paketini seç, güvenli ödeme yap. Ödeme onaylanır onaylanmaz ilanın anında yayına girer.',
+    title: 'İlanı Yayınla',
+    desc: 'Formu doldurun, gönderin — ilanınız anında yayına çıkar. Ücretsiz ve hızlıdır.',
   },
   {
     step: '3',

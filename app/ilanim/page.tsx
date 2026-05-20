@@ -172,14 +172,6 @@ export default function IlanımPage() {
                         Aktife Al
                       </button>
                     )}
-                    {listing.status === 'pending_payment' && (
-                      <Link
-                        href={`/odeme/${listing.id}`}
-                        className="text-xs text-center bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-3 py-1.5 rounded-lg transition-colors"
-                      >
-                        Yayınla
-                      </Link>
-                    )}
                     <button
                       onClick={() => handleDelete(listing.id)}
                       disabled={actionId === listing.id}

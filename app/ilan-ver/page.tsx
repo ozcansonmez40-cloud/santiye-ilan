@@ -13,7 +13,7 @@ export default function IlanVerPage() {
         <div className="mb-8 text-center">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-800">İlan Ver</h1>
           <p className="mt-2 text-slate-500 text-sm">
-            Formu doldurun, paketinizi seçin — ilanınız anında yayına çıksın.
+            Formu doldurun, gönderin — ilanınız anında yayına çıkar. Ücretsiz.
           </p>
         </div>
 
