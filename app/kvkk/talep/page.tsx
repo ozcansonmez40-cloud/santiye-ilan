@@ -17,7 +17,7 @@ export default function KvkkTalepPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!isFirebaseConfigured || !db) {
-      setSubmitError('Sistem şu an kullanılamıyor. Lütfen ozcansonmez40@gmail.com adresine e-posta gönderin.')
+      setSubmitError('Sistem şu an kullanılamıyor. Lütfen iletisim@sahailan.com adresine e-posta gönderin.')
       return
     }
     setLoading(true)
@@ -32,7 +32,7 @@ export default function KvkkTalepPage() {
       })
       setSent(true)
     } catch {
-      setSubmitError('Talep gönderilemedi. Lütfen ozcansonmez40@gmail.com adresine e-posta gönderin.')
+      setSubmitError('Talep gönderilemedi. Lütfen iletisim@sahailan.com adresine e-posta gönderin.')
     } finally {
       setLoading(false)
     }

@@ -38,11 +38,11 @@ export default function GizlilikPage() {
           </Section>
 
           <Section title="6. Verilerinizin Silinmesi">
-            <p>Hesabınızı ve verilerinizi silmek için <strong>ozcansonmez.arc@gmail.com</strong> adresine e-posta gönderebilirsiniz. Talepler 30 gün içinde sonuçlandırılır.</p>
+            <p>Hesabınızı ve verilerinizi silmek için <strong>iletisim@sahailan.com</strong> adresine e-posta gönderebilirsiniz. Talepler 30 gün içinde sonuçlandırılır.</p>
           </Section>
 
           <Section title="7. İletişim">
-            <p>Gizlilik politikamızla ilgili sorularınız için: <strong>ozcansonmez.arc@gmail.com</strong></p>
+            <p>Gizlilik politikamızla ilgili sorularınız için: <strong>iletisim@sahailan.com</strong></p>
           </Section>
         </div>
       </div>

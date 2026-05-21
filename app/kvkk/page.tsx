@@ -50,7 +50,7 @@ export default function KvkkPage() {
           </Section>
 
           <Section title="6. Başvuru">
-            <p>Haklarınızı kullanmak için aşağıdaki formu doldurabilir veya <strong>ozcansonmez.arc@gmail.com</strong> adresine e-posta gönderebilirsiniz.</p>
+            <p>Haklarınızı kullanmak için aşağıdaki formu doldurabilir veya <strong>iletisim@sahailan.com</strong> adresine e-posta gönderebilirsiniz.</p>
             <a href="/kvkk/talep" className="inline-block mt-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition-colors">
               KVKK Başvuru Formu →
             </a>

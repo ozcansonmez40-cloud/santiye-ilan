@@ -46,7 +46,7 @@ export default function KullanimSartlariPage() {
           </Section>
 
           <Section title="8. İletişim">
-            <p>Sorularınız için: <strong>ozcansonmez.arc@gmail.com</strong></p>
+            <p>Sorularınız için: <strong>iletisim@sahailan.com</strong></p>
           </Section>
         </div>
       </div>
