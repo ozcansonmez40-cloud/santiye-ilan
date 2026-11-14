@@ -1,11 +1,12 @@
 ﻿import type { Metadata } from "next";
 import { SITE_DESCRIPTION, SITE_NAME } from "./constants";
 import type { Listing } from "./types";
-
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { SITE_URL } from "./site-url";
 
 export const defaultMetadata: Metadata = {
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL(SITE_URL),
+  // Next.js resolves './' against each page, without filter/query parameters.
+  alternates: { canonical: './' },
   title: {
     default: "Saha İlan | İnşaat ve Saha Personeli İlan Platformu",
     template: "%s | Saha İlan",
@@ -14,7 +15,7 @@ export const defaultMetadata: Metadata = {
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    url: baseUrl,
+    url: './',
     siteName: SITE_NAME,
     locale: "tr_TR",
     type: "website",

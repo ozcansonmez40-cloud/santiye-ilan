@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminAuth } from '@/lib/firebase-admin'
+import { getAdminAuth } from '@/lib/firebase-admin'
 
 const ADMIN_EMAIL = 'ozcansonmez40@gmail.com'
 
@@ -12,6 +12,11 @@ export async function POST(request: NextRequest) {
   const idToken = authHeader.slice(7)
 
   try {
+    const adminAuth = getAdminAuth()
+    if (!adminAuth) {
+      return NextResponse.json({ error: 'Admin service is not configured' }, { status: 503 })
+    }
+
     const decoded = await adminAuth.verifyIdToken(idToken)
 
     if (decoded.email !== ADMIN_EMAIL || !decoded.email_verified) {

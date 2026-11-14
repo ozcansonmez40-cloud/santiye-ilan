@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
+import { SITE_URL } from '@/lib/site-url'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://sahailan.com'
+  const base = SITE_URL
   return [
     { url: base, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${base}/ilanlar`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
