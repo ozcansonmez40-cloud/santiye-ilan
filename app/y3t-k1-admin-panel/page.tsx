@@ -7,6 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
 import type { Listing } from '@/lib/types'
+import { categoryForType } from '@/lib/classifieds'
 
 const ADMIN_EMAIL = 'ozcansonmez40@gmail.com'
 
@@ -117,7 +118,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>
-                    {['Başlık', 'Tür', 'Şehir', 'Pozisyon', 'Durum', 'Tarih', 'İşlem'].map(h => (
+                    {['Başlık', 'Kategori / Tür', 'Şehir', 'Alt Kategori / Meslek', 'Durum', 'Tarih', 'İşlem'].map(h => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                         {h}
                       </th>
@@ -139,7 +140,7 @@ export default function AdminPage() {
                           <p className="text-xs text-slate-400">{l.companyName}</p>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-slate-500 text-xs">{LISTING_TYPE_LABELS[l.listingType]}</td>
+                      <td className="px-4 py-3 text-slate-500 text-xs">{categoryForType(l.listingType).label} · {LISTING_TYPE_LABELS[l.listingType]}</td>
                       <td className="px-4 py-3 text-slate-500 text-xs">{l.city}</td>
                       <td className="px-4 py-3 text-slate-500 text-xs">{l.position}</td>
                       <td className="px-4 py-3">

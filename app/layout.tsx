@@ -13,8 +13,8 @@ const geist = Geist({
 export const metadata: Metadata = {
   ...defaultMetadata,
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: [{ url: '/logo-v2.png', type: 'image/png', sizes: '512x512' }],
+    apple: [{ url: '/apple-touch-icon-v2.png', sizes: '180x180' }],
   },
   verification: {
     google: 'GI3qiK5sQUnPLMB3pGvNusYK0iJEF342T5l709eGLVQ',

@@ -8,6 +8,7 @@ import { onAuthStateChanged, type User } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
 import type { Listing } from '@/lib/types'
+import { categoryForType } from '@/lib/classifieds'
 
 export default function IlanımPage() {
   const router = useRouter()
@@ -132,7 +133,7 @@ export default function IlanımPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-2">
                       <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                        {LISTING_TYPE_LABELS[listing.listingType]}
+                        {categoryForType(listing.listingType).label} · {LISTING_TYPE_LABELS[listing.listingType]}
                       </span>
                       <StatusBadge status={listing.status} />
                     </div>

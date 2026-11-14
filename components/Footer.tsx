@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="max-w-xs">
             <p className="text-white font-bold text-lg">Saha İlan</p>
             <p className="text-sm mt-2 leading-relaxed">
-              İnşaat, mimarlık ve saha personeli için Türkiye'nin ilan platformu.
+              Emlak, vasıta, ürün, hizmet ve iş ilanları için Türkiye'nin ilan platformu.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-8 text-sm">

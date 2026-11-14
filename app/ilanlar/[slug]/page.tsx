@@ -8,6 +8,7 @@ import { onAuthStateChanged, type User } from 'firebase/auth'
 import { db, auth, isFirebaseConfigured } from '@/lib/firebase'
 import { LISTING_TYPE_LABELS, WORK_TYPE_LABELS } from '@/lib/constants'
 import type { Listing, ListingContact } from '@/lib/types'
+import { categoryForType, isJobType } from '@/lib/classifieds'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -17,7 +18,7 @@ const REPORT_REASONS = [
   'Sahte / yanıltıcı ilan',
   'Dolandırıcılık girişimi',
   'Uygunsuz içerik',
-  'İnşaat sektörüyle ilgisiz',
+  'Yanlış kategori / ilgisiz içerik',
   'Diğer',
 ]
 
@@ -112,6 +113,8 @@ export default function ListingDetailPage({ params }: PageProps) {
       : 'bg-emerald-50 text-emerald-700 border-emerald-100'
 
   const isLoggedIn = user && user !== 'loading'
+  const category = categoryForType(listing.listingType)
+  const job = isJobType(listing.listingType)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -126,6 +129,7 @@ export default function ListingDetailPage({ params }: PageProps) {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="bg-slate-900 px-6 py-5">
             <div className="flex items-center gap-2 flex-wrap mb-3">
+              <span className="text-xs font-semibold text-amber-300">{category.label}</span>
               <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${typeColor}`}>
                 {LISTING_TYPE_LABELS[listing.listingType]}
               </span>
@@ -148,20 +152,20 @@ export default function ListingDetailPage({ params }: PageProps) {
           <div className="px-6 py-6 space-y-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <InfoItem label="Şehir / İlçe" value={`${listing.city}${listing.district ? ' / ' + listing.district : ''}`} />
-              <InfoItem label="Pozisyon" value={listing.position} />
-              {listing.workType && (
+              <InfoItem label={category.detailLabel} value={listing.position} />
+              {job && listing.workType && (
                 <InfoItem label="Çalışma Şekli" value={WORK_TYPE_LABELS[listing.workType]} />
               )}
-              {listing.experienceYears && (
+              {job && listing.experienceYears && (
                 <InfoItem label="Deneyim" value={`${listing.experienceYears}+ yıl`} />
               )}
               {listing.projectType && (
                 <InfoItem label="Proje Türü" value={listing.projectType} />
               )}
               {listing.salaryText && (
-                <InfoItem label="Ücret" value={listing.salaryText} />
+                <InfoItem label={job ? 'Ücret' : 'Fiyat / Ücret'} value={listing.salaryText} />
               )}
-              {listing.listingType === 'employer' && listing.companyName && (
+              {listing.companyName && (
                 <InfoItem label="Firma" value={listing.companyName} />
               )}
             </div>

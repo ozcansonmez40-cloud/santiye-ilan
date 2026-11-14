@@ -11,27 +11,27 @@ const POPULAR_CITIES = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Saha İlanları | Saha İlan',
+  title: 'Tüm İlanlar',
   description:
-    'Şantiye şefi, inşaat mühendisi, mimar ve saha personeli ilanları. Şehir ve pozisyona göre filtreleyin.',
+    'Emlak, vasıta, ürün, hizmet ve iş ilanlarını keşfedin. Kategori, şehir ve anahtar kelimeye göre aradığınızı bulun.',
 }
 
 type PageProps = {
-  searchParams: Promise<{ type?: string; city?: string; position?: string; q?: string }>
+  searchParams: Promise<{ category?: string; type?: string; city?: string; position?: string; q?: string }>
 }
 
 export default async function IlanlarPage({ searchParams }: PageProps) {
-  const { type, city, position, q } = await searchParams
+  const { category, type, city, position, q } = await searchParams
 
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-slate-900 py-10">
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-5">
-            Saha İlanları
+            Tüm İlanlar
           </h1>
           <Suspense fallback={<div className="h-24 animate-pulse bg-slate-700 rounded-xl" />}>
-            <FilterBar />
+            <FilterBar key={JSON.stringify([category, type, city, position, q])} />
           </Suspense>
         </div>
       </div>
@@ -45,6 +45,7 @@ export default async function IlanlarPage({ searchParams }: PageProps) {
           <ListingsGrid
             mode="all"
             filterType={type}
+            filterCategory={category}
             filterCity={city}
             filterPosition={position}
             filterQ={q}

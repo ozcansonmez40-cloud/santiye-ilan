@@ -1,14 +1,12 @@
 import type { ListingType, WorkType } from "./types";
+import { TYPE_LABELS } from './classifieds';
 
 export const SITE_NAME = "Saha İlan";
 
 export const SITE_DESCRIPTION =
-  "İnşaat, mimarlık ve saha personeli için iş ve eleman ilan platformu.";
+  "Emlak, vasıta, ürün, hizmet ve iş ilanları tek yerde. Saha İlan’da aradığınızı bulun, ücretsiz ilan verin.";
 
-export const LISTING_TYPE_LABELS: Record<ListingType, string> = {
-  employer: "Eleman Aranıyor",
-  worker: "İş Arıyorum",
-};
+export const LISTING_TYPE_LABELS: Record<ListingType, string> = TYPE_LABELS;
 
 export const WORK_TYPE_LABELS: Record<WorkType, string> = {
   full_time: "Tam zamanlı",
@@ -174,6 +172,53 @@ export const ABROAD_COUNTRIES = [
 ];
 
 export const POSITIONS = [
+  "Yazılım Geliştirici",
+  "Web Tasarımcı",
+  "Grafik Tasarımcı",
+  "Veri Analisti",
+  "Teknik Destek Uzmanı",
+  "Dijital Pazarlama Uzmanı",
+  "Sosyal Medya Uzmanı",
+  "Satış Danışmanı",
+  "Satış Temsilcisi",
+  "Mağaza Müdürü",
+  "Kasiyer",
+  "Müşteri Temsilcisi",
+  "Çağrı Merkezi Personeli",
+  "İnsan Kaynakları Uzmanı",
+  "Ofis Asistanı",
+  "Sekreter",
+  "Ön Muhasebe Personeli",
+  "Finans Uzmanı",
+  "Öğretmen",
+  "Eğitmen",
+  "Çocuk Bakıcısı",
+  "Yaşlı Bakım Personeli",
+  "Hemşire",
+  "Sağlık Teknikeri",
+  "Hasta Kabul Personeli",
+  "Aşçı",
+  "Aşçı Yardımcısı",
+  "Garson",
+  "Barista",
+  "Resepsiyonist",
+  "Kat Hizmetleri Personeli",
+  "Turizm ve Otelcilik Personeli",
+  "Şoför",
+  "Kurye",
+  "Depo Personeli",
+  "Lojistik Uzmanı",
+  "Üretim Personeli",
+  "Makine Operatörü",
+  "Kalite Kontrol Personeli",
+  "Tekstil Personeli",
+  "Terzi",
+  "Kuaför",
+  "Güzellik Uzmanı",
+  "Temizlik Personeli",
+  "Tarım İşçisi",
+  "Veteriner Teknikeri",
+  "E-ticaret Uzmanı",
   "Şantiye Şefi",
   "İnce İşler Şefi",
   "Kaba İşler Şefi",
@@ -215,7 +260,7 @@ export const POSITIONS = [
   "Güvenlik Görevlisi",
   "Genel İşçi",
   "Stajyer",
-];
+].sort((a, b) => a.localeCompare(b, 'tr'));
 
 export const FIRESTORE_COLLECTIONS = {
   users: "users",

@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import type { Listing } from '@/lib/types'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
+import { categoryForType } from '@/lib/classifieds'
 
 type Props = {
   listing: Listing
 }
 
 export default function FeaturedListing({ listing }: Props) {
+  const category = categoryForType(listing.listingType)
   const typeColor =
     listing.listingType === 'employer'
       ? 'bg-blue-50 text-blue-700 border-blue-100'
@@ -24,6 +26,7 @@ export default function FeaturedListing({ listing }: Props) {
       </div>
 
       <div className="mt-2 space-y-2">
+        <p className="text-xs font-semibold text-amber-700">{category.label}</p>
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${typeColor}`}>
             {LISTING_TYPE_LABELS[listing.listingType]}
@@ -40,12 +43,12 @@ export default function FeaturedListing({ listing }: Props) {
         </h2>
 
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-slate-500">
-          <span>📍 {listing.city} / {listing.district}</span>
-          <span>💼 {listing.position}</span>
+          <span>📍 {listing.city}{listing.district ? ` / ${listing.district}` : ''}</span>
+          <span>{listing.position}</span>
         </div>
 
         {listing.salaryText && (
-          <p className="text-sm text-slate-500">{listing.salaryText}</p>
+          <p className="text-base font-bold text-slate-800">{listing.salaryText}</p>
         )}
 
         <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
@@ -54,7 +57,7 @@ export default function FeaturedListing({ listing }: Props) {
       </div>
 
       <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-        <span>{listing.listingType === 'employer' ? (listing.companyName || listing.position) : listing.position}</span>
+        <span>{listing.companyName || listing.position}</span>
         <span>{listing.viewCount} görüntülenme</span>
       </div>
     </Link>

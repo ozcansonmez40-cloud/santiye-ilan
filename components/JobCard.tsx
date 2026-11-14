@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import type { Listing } from '@/lib/types'
 import { LISTING_TYPE_LABELS } from '@/lib/constants'
+import { categoryForType } from '@/lib/classifieds'
+import CategoryIcon from './CategoryIcon'
 
 type Props = {
   listing: Listing
@@ -21,6 +23,7 @@ const WORK_TYPE_LABELS: Record<string, string> = {
 }
 
 export default function JobCard({ listing }: Props) {
+  const category = categoryForType(listing.listingType)
   const typeColor =
     listing.listingType === 'employer'
       ? 'bg-blue-50 text-blue-700 border-blue-100'
@@ -31,7 +34,8 @@ export default function JobCard({ listing }: Props) {
       href={`/ilanlar/${listing.slug}`}
       className="block bg-white rounded-xl border border-slate-200 hover:border-amber-400 hover:shadow-md transition-all p-5 group"
     >
-      {listing.listingType === 'employer' && listing.companyName && (
+      <div className="flex items-center gap-2 text-xs text-amber-700 font-semibold mb-3"><CategoryIcon category={category.id} className="w-4 h-4" />{category.label}</div>
+      {listing.companyName && (
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
           {listing.companyName}
         </p>
@@ -64,11 +68,11 @@ export default function JobCard({ listing }: Props) {
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
         <span>📍 {listing.city}{listing.district ? ` / ${listing.district}` : ''}</span>
-        <span>💼 {listing.position}</span>
+        <span>{listing.position}</span>
       </div>
 
       {listing.salaryText && (
-        <p className="mt-1.5 text-sm text-slate-500">{listing.salaryText}</p>
+        <p className="mt-3 text-base font-bold text-slate-800">{listing.salaryText}</p>
       )}
 
       <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">

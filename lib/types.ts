@@ -1,12 +1,19 @@
 /**
- * Canonical data model for Şantiye İlan.
+ * Canonical data model for Saha İlan.
  *
  * Flutter compatibility: These types map 1-to-1 to Firestore document schemas.
  * The Flutter app will use the same Firebase project, same collection names
  * (defined in lib/constants.ts), and the same field names as these types.
  */
 
-export type ListingType = 'employer' | 'worker'
+export type ListingType =
+  | 'employer' | 'worker'
+  | 'real_estate_sale' | 'real_estate_rent'
+  | 'vehicle_sale' | 'vehicle_rent'
+  | 'product_sale'
+  | 'service_offer' | 'service_request'
+
+export type ListingCategory = 'emlak' | 'vasita' | 'urun' | 'hizmet' | 'is'
 
 export type WorkType = 'full_time' | 'part_time' | 'project_based' | 'temporary'
 
@@ -36,12 +43,14 @@ export type Listing = {
   title: string
   city: string
   district: string
+  // Existing Firestore key: a job position or a classifieds subcategory.
   position: string
   projectType?: string
   workType?: WorkType
   experienceYears?: number
   salaryMin?: number
   salaryMax?: number
+  // Existing Firestore key: public price, fee or salary text.
   salaryText?: string
   description: string
   contactName?: string

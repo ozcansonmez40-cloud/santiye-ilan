@@ -10,21 +10,21 @@ export default function KullanimSartlariPage() {
       <div className="max-w-3xl mx-auto px-4">
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
           <h1 className="text-2xl font-bold text-slate-800 mb-2">Kullanım Şartları</h1>
-          <p className="text-sm text-slate-400 mb-8">Son güncelleme: Mayıs 2026</p>
+          <p className="text-sm text-slate-400 mb-8">Son güncelleme: Kasım 2026</p>
 
           <Section title="1. Kabul">
             <p>Saha İlan platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. Şartları kabul etmiyorsanız platformu kullanmayınız.</p>
           </Section>
 
           <Section title="2. Hizmet Tanımı">
-            <p>Saha İlan, inşaat sektöründe iş arayan profesyoneller ile eleman arayan firma ve müteahhitleri bir araya getiren bir ilan platformudur. Platform, taraflar arasındaki iletişime aracılık eder; iş akdi kurulmasına taraf değildir.</p>
+            <p>Saha İlan; emlak, vasıta, ürün, hizmet ve iş ilanlarının yayınlandığı bir ilan platformudur. Platform, ilan verenler ile ilgilenen kişiler arasındaki iletişime aracılık eder; satış, kiralama, hizmet veya iş sözleşmelerinin tarafı değildir.</p>
           </Section>
 
           <Section title="3. İlan Kuralları">
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li>İlanlar gerçek ve doğru bilgi içermelidir.</li>
               <li>Yanıltıcı, sahte veya dolandırıcılık amaçlı ilanlar kesinlikle yasaktır.</li>
-              <li>İnşaat ve saha işleriyle ilgisi olmayan ilanlar yayınlanamaz.</li>
+              <li>İlanlar seçilen kategoriyle ilgili olmalı; ürün, taşınmaz, araç, hizmet veya işin özellikleri doğru açıklanmalıdır.</li>
               <li>Kişisel hakaret veya ayrımcılık içeren ilanlar kaldırılır.</li>
             </ul>
           </Section>

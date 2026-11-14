@@ -1,8 +1,12 @@
-# Şantiye İlan
+# Saha İlan
 
-**İnşaat, mimarlık ve saha personeli için Türkiye'nin ilan platformu.**
+**Emlak, vasıta, ürün, hizmet ve iş ilanları için Türkiye'nin ilan platformu.**
 
-Firmalar eleman ilanı verir, saha profesyonelleri iş arıyorum ilanı bırakır. Şehir, ilçe ve pozisyona göre filtrelenir.
+Satılık/kiralık emlak ve vasıta, ürün/ikinci el, hizmet veren/arayan ve iş/eleman ilanları yayınlanabilir. Kategori, ilan türü, şehir, alt kategori/meslek ve anahtar kelimeye göre filtrelenir.
+
+Kategori tanımları `lib/classifieds.ts`, form doğrulaması ve kayıt dönüşümü `lib/listing-draft.ts` içindedir. Eski `employer` ve `worker` kayıtları İş / Eleman kategorisine aittir; veri göçü gerekmez. Diğer kategoriler ayrı `listingType` değerleri kullanır. Mevcut Firestore alanları korunur: `position` alt kategori/meslek, `salaryText` fiyat/ücret bilgisini taşır. Telefon/e-posta yalnızca `listing_contacts` koleksiyonunda tutulur. Veritabanı erişim kuralları genişletilmez.
+
+`npm run test:classifieds` kategori eşlemesini, kayıt doğrulamasını, filtreleri ve iletişim bilgilerinin ayrı tutulmasını kontrol eder. Yeni ikonun ana dosyası `public/saha-ilan-icon-master.png`; boyutları yeniden üretmek için `node scripts/prepare-brand-icons.mjs` çalıştırılır.
 
 ---
 

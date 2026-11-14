@@ -8,7 +8,7 @@ export const defaultMetadata: Metadata = {
   // Next.js resolves './' against each page, without filter/query parameters.
   alternates: { canonical: './' },
   title: {
-    default: "Saha İlan | İnşaat ve Saha Personeli İlan Platformu",
+    default: "Saha İlan | Emlak, Vasıta, Ürün, Hizmet ve İş İlanları",
     template: "%s | Saha İlan",
   },
   description: SITE_DESCRIPTION,
@@ -30,7 +30,7 @@ export function listingMetadata(listing?: Listing): Metadata {
     };
   }
 
-  const title = `${listing.city} ${listing.position} ${listing.listingType === "employer" ? "Aranıyor" : "İş Arıyorum"}`;
+  const title = listing.title;
 
   return {
     title,

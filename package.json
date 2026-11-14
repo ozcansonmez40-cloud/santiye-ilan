@@ -6,7 +6,8 @@
     "dev": "next dev --port 80",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:classifieds": "tsc --module commonjs --moduleResolution node --target es2020 --outDir .test-build --skipLibCheck lib/types.ts lib/classifieds.ts lib/listing-draft.ts && node scripts/test-classifieds.cjs"
   },
   "dependencies": {
     "firebase": "^12.13.0",

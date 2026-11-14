@@ -7,19 +7,20 @@ import StatsStrip from '@/components/StatsStrip'
 import CityChips from '@/components/CityChips'
 import FilterBar from '@/components/FilterBar'
 import ListingsGrid from '@/components/ListingsGrid'
+import CategoryNav from '@/components/CategoryNav'
 
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: 'Saha İlan | İnşaat ve Saha Personeli İlan Platformu',
+  title: 'Saha İlan | Emlak, Vasıta, Ürün, Hizmet ve İş İlanları',
   description:
-    'Şantiye şefi, inşaat mühendisi, mimar ve saha personeli ilanları. Firmalar eleman ilanı verir, profesyoneller iş arıyorum ilanı bırakır.',
+    'Satılık ve kiralık emlak, araçlar, ikinci el ürünler, hizmetler ve iş ilanları. Saha İlan’da aradığınızı bulun, ücretsiz ilan verin.',
 }
 
 const STATS = [
-  { value: '500+', label: 'Aktif İlan' },
+  { value: '5', label: 'Ana Kategori' },
   { value: '81', label: 'İl' },
-  { value: '1.200+', label: 'Kayıtlı Kullanıcı' },
-  { value: '3.400+', label: 'Toplam İletişim' },
+  { value: 'Ücretsiz', label: 'İlan Yayınlama' },
+  { value: 'Doğrudan', label: 'İletişim' },
 ]
 
 export default function HomePage() {
@@ -29,12 +30,12 @@ export default function HomePage() {
       <section className="bg-slate-900 py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-            Şantiye şefi arayanlar ve iş arayan{' '}
-            <span className="text-amber-400">saha personeli</span> burada buluşur.
+            Aradığın ilan,{' '}
+            <span className="text-amber-400">her alanda</span> burada.
           </h1>
           <p className="mt-5 text-slate-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Firmalar eleman ilanı verir, saha profesyonelleri iş arıyorum ilanı bırakır.
-            Şehir, ilçe ve pozisyona göre hızlıca filtrelenir.
+            Emlak, vasıta, ürün, hizmet ve iş ilanları tek yerde.
+            İhtiyacınızı bulun, ilanınızı ücretsiz yayınlayın, doğrudan iletişime geçin.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -61,6 +62,8 @@ export default function HomePage() {
           </Suspense>
         </div>
       </section>
+
+      <CategoryNav />
 
       {/* ─── Stats ─────────────────────────────────────────── */}
       <StatsStrip stats={STATS} />
@@ -133,23 +136,23 @@ export default function HomePage() {
       <section className="bg-slate-900 py-14">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            Saha profesyoneli misiniz?
+            İlanınız doğru kişiye ulaşsın.
           </h2>
           <p className="text-slate-300 text-sm mb-7">
-            İş arıyorum ilanı verin, projenize uygun firma veya müteahhit sizi bulsun.
+            Satmak, kiralamak, hizmet sunmak veya iş fırsatı paylaşmak için bir ilan oluşturun.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/ilan-ver"
               className="px-7 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl transition-colors text-sm"
             >
-              İş Arıyorum İlanı Ver
+              Ücretsiz İlan Ver
             </Link>
             <Link
-              href="/ilanlar?type=employer"
+              href="/ilanlar"
               className="px-7 py-3.5 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-colors text-sm border border-slate-600"
             >
-              Eleman İlanlarına Bak
+              Tüm İlanları Keşfet
             </Link>
           </div>
         </div>
@@ -174,8 +177,8 @@ function SectionHeader({ title, href, linkLabel }: { title: string; href?: strin
 const HOW_IT_WORKS = [
   {
     step: '1',
-    title: 'İlan Oluştur',
-    desc: 'Firma eleman ilanı verir; saha profesyoneli iş arıyorum ilanı bırakır. Hızlı ve kolaydır.',
+    title: 'Kategorini Seç',
+    desc: 'Emlak, vasıta, ürün, hizmet veya iş kategorisinden ihtiyacınıza uygun olanı seçin.',
   },
   {
     step: '2',
@@ -185,6 +188,6 @@ const HOW_IT_WORKS = [
   {
     step: '3',
     title: 'İletişim Kurulur',
-    desc: 'Adaylar ve firmalar ilan üzerinden doğrudan iletişime geçer.',
+    desc: 'İlgilenen kişiler ilan üzerinden sizinle doğrudan iletişime geçer.',
   },
 ]

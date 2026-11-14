@@ -341,7 +341,7 @@ export default function GirisPage() {
                     className="mt-0.5 accent-amber-500"
                   />
                   <span className="text-xs text-slate-600">
-                    18 yaşında veya üzerinde olduğumu onaylıyorum. İnşaat sektöründe 18 yaş altı çalışma yasal olarak yasaktır.
+                    Saha İlan’ı kullanmak için 18 yaşında veya üzerinde olduğumu onaylıyorum.
                   </span>
                 </label>
                 <label className="flex items-start gap-2 cursor-pointer">

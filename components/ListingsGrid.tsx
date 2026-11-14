@@ -14,10 +14,12 @@ import { mockListings } from '@/lib/mockData'
 import JobCard from '@/components/JobCard'
 import FeaturedListing from '@/components/FeaturedListing'
 import type { Listing } from '@/lib/types'
+import { findCategory, matchesListingFilters } from '@/lib/classifieds'
 
 type Props = {
   mode?: 'all' | 'featured' | 'latest'
   filterType?: string
+  filterCategory?: string
   filterCity?: string
   filterPosition?: string
   filterQ?: string
@@ -27,6 +29,7 @@ type Props = {
 export default function ListingsGrid({
   mode = 'all',
   filterType,
+  filterCategory,
   filterCity,
   filterPosition,
   filterQ,
@@ -34,12 +37,23 @@ export default function ListingsGrid({
 }: Props) {
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
+    let cancelled = false
+    const filters = { category: filterCategory, type: filterType, city: filterCity, position: filterPosition, q: filterQ }
+    const finish = (items: Listing[]) => {
+      const results = items.filter(item => matchesListingFilters(item, filters))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, maxCount)
+      if (!cancelled) setListings(results)
+    }
     async function fetchListings() {
+      setLoading(true)
+      setError('')
       if (!isFirebaseConfigured || !db) {
-        const fallback = mockListings.filter((l) => l.status === 'active')
-        setListings(fallback)
+        const fallback = mockListings.filter((l) => l.status === 'active' && (mode !== 'featured' || l.isFeatured))
+        finish(fallback)
         setLoading(false)
         return
       }
@@ -47,46 +61,38 @@ export default function ListingsGrid({
       try {
         const constraints: QueryConstraint[] = [
           where('status', '==', 'active'),
-          limit(maxCount),
+          limit(Math.max(50, maxCount)),
         ]
 
         if (mode === 'featured') constraints.push(where('isFeatured', '==', true))
         if (filterCity) constraints.push(where('city', '==', filterCity))
         if (filterType && filterType !== 'all') constraints.push(where('listingType', '==', filterType))
+        else {
+          const category = findCategory(filterCategory)
+          if (category) constraints.push(category.types.length === 1 ? where('listingType', '==', category.types[0]) : where('listingType', 'in', category.types))
+        }
         if (filterPosition) constraints.push(where('position', '==', filterPosition))
 
         const snap = await getDocs(query(collection(db, 'listings'), ...constraints))
-        let results: Listing[] = snap.docs.map((doc) => ({
+        const results: Listing[] = snap.docs.map((doc) => ({
           ...(doc.data() as Omit<Listing, 'id'>),
           id: doc.id,
           createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
           updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
         }))
 
-        if (filterQ) {
-          const term = filterQ.toLowerCase()
-          results = results.filter(
-            (l) =>
-              l.title.toLowerCase().includes(term) ||
-              l.description.toLowerCase().includes(term) ||
-              l.city.toLowerCase().includes(term) ||
-              l.position.toLowerCase().includes(term)
-          )
-        }
-
-        if (mode === 'latest') results = results.slice(0, maxCount)
-
-        setListings(results)
+        finish(results)
       } catch (err) {
         console.error('Firestore fetch error:', err)
-        setListings([])
+        if (!cancelled) { setListings([]); setError('İlanlar şu anda yüklenemedi. Lütfen sayfayı yenileyerek tekrar deneyin.') }
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
 
     fetchListings()
-  }, [mode, filterType, filterCity, filterPosition, filterQ, maxCount])
+    return () => { cancelled = true }
+  }, [mode, filterType, filterCategory, filterCity, filterPosition, filterQ, maxCount])
 
   if (loading) {
     return (
@@ -97,6 +103,8 @@ export default function ListingsGrid({
       </div>
     )
   }
+
+  if (error) return <p role="alert" className="text-center py-10 text-sm text-red-600">{error}</p>
 
   if (listings.length === 0) {
     return (
